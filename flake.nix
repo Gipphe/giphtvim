@@ -174,7 +174,6 @@
               bufferline-nvim
               catppuccin-nvim
               conform-nvim
-              flash-nvim
               gitsigns-nvim
               grapple-nvim
               guess-indent-nvim
@@ -214,6 +213,7 @@
 
             full = with pkgs.vimPlugins; [
               fidget-nvim
+              flash-nvim
               lazydev-nvim
               marp-nvim
               no-neck-pain-nvim
