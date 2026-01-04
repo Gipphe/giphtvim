@@ -6,24 +6,24 @@ return {
       {
         -- Automatically install LSPs and related tools to stdpath for Neovim
         'williamboman/mason.nvim',
-        -- NOTE: nixCats: use lazyAdd to only enable mason if nix wasnt involved.
+        -- NOTE: nixCats: only enable mason if nix wasn't involved.
         -- because we will be using nix to download things instead.
-        enabled = require('nixCatsUtils').lazyAdd(true, false),
+        enabled = not require('nixCatsUtils').isNixCats,
         opts = {},
       }, -- NOTE: Must be loaded before dependants
 
       {
         'williamboman/mason-lspconfig.nvim',
-        -- NOTE: nixCats: use lazyAdd to only enable mason if nix wasnt involved.
+        -- NOTE: nixCats: only enable mason if nix wasn't involved.
         -- because we will be using nix to download things instead.
-        enabled = require('nixCatsUtils').lazyAdd(true, false),
+        enabled = not require('nixCatsUtils').isNixCats,
       },
 
       {
         'WhoIsSethDaniel/mason-tool-installer.nvim',
-        -- NOTE: nixCats: use lazyAdd to only enable mason if nix wasnt involved.
+        -- NOTE: nixCats: only enable mason if nix wasn't involved.
         -- because we will be using nix to download things instead.
-        enabled = require('nixCatsUtils').lazyAdd(true, false),
+        enabled = not require('nixCatsUtils').isNixCats,
       },
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`

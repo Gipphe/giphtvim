@@ -112,124 +112,150 @@
           # this section is for dependencies that should be available
           # at RUN TIME for plugins. Will be available to PATH within neovim terminal
           # this includes LSPs
-          lspsAndRuntimeDeps = with pkgs; {
-            general = [
-              codespell
-              fd
-              fourmolu
-              haskellPackages.cabal-fmt
-              markdownlint-cli
-              nix-doc
-              nixfmt
-              ripgrep
-              shfmt
-              stdenv.cc.cc
-              stylua
-              universal-ctags
-              self.packages.${pkgs.stdenv.hostPlatform.system}.prettier-with-plugins
-            ];
+          lspsAndRuntimeDeps = {
+            general =
+              builtins.attrValues {
+                inherit (pkgs)
+                  codespell
+                  fd
+                  fourmolu
+                  markdownlint-cli
+                  nix-doc
+                  nixfmt
+                  ripgrep
+                  shfmt
+                  stylua
+                  universal-ctags
+                  ;
+              }
+              ++ [
+                pkgs.haskellPackages.cabal-fmt
+                pkgs.stdenv.cc.cc
+                self.packages.${pkgs.stdenv.hostPlatform.system}.prettier-with-plugins
+              ];
 
-            full = with pkgs; [
-              bash-language-server
-              dockerfile-language-server
-              elmPackages.elm-language-server
-              fish-lsp
-              gopls
-              kdePackages.qtdeclarative
-              lemminx
-              lua-language-server
-              marksman
-              metals
-              nil
-              nixd
-              opentofu
-              powershell
-              powershell-editor-services
-              ruff
-              rust-analyzer
-              sqls
-              tailwindcss-language-server
-              terraform-ls
-              tofu-ls
-              typescript-language-server
-              vscode-langservers-extracted
-              yaml-language-server
-            ];
+            full =
+              builtins.attrValues {
+                inherit (pkgs)
+                  bash-language-server
+                  dockerfile-language-server
+                  fish-lsp
+                  gopls
+                  lemminx
+                  lua-language-server
+                  marksman
+                  metals
+                  nil
+                  nixd
+                  opentofu
+                  powershell
+                  powershell-editor-services
+                  ruff
+                  rust-analyzer
+                  sqls
+                  tailwindcss-language-server
+                  terraform-ls
+                  tofu-ls
+                  typescript-language-server
+                  vscode-langservers-extracted
+                  yaml-language-server
+                  ;
+              }
+              ++ [
+                pkgs.elmPackages.elm-language-server
+                pkgs.kdePackages.qtdeclarative
+              ];
 
-            basedpyright = [ basedpyright ];
+            basedpyright = [ pkgs.basedpyright ];
 
-            haskell = with haskellPackages; [
-              fast-tags
-              ghci-dap
-              haskell-debug-adapter
-              haskell-language-server
-              hoogle
-            ];
+            haskell = builtins.attrValues {
+              inherit (pkgs.haskellPackages)
+                fast-tags
+                ghci-dap
+                haskell-debug-adapter
+                haskell-language-server
+                hoogle
+                ;
+            };
           };
 
           # This is for plugins that will load at startup without using packadd:
-          startupPlugins = with pkgs.vimPlugins; {
-            general = [
-              blink-cmp
-              bufferline-nvim
-              catppuccin-nvim
-              conform-nvim
-              gitsigns-nvim
-              grapple-nvim
-              guess-indent-nvim
-              hunk-nvim
-              lazy-nvim
-              luasnip
-              mini-nvim
-              neoconf-nvim
-              nvim-autopairs
-              nvim-highlight-colors
-              nvim-spectre
-              nvim-treesitter-context
-              nvim-treesitter-refactor
-              nvim-treesitter-textobjects
-              nvim-treesitter.withAllGrammars
-              nvim-ts-autotag
-              nvim-ts-context-commentstring
-              nvim-web-devicons
-              oil-nvim
-              persistence-nvim
-              plenary-nvim
-              promise-async
-              snacks-nvim
-              tiny-inline-diagnostic-nvim
-              trouble-nvim
-              undotree
-              vim-css-color
-              vim-go
-              vim-illuminate
-              vim-matchup
-              virt-column-nvim
-              which-key-nvim
-              wilder-nvim
-              yuck-vim
-              zellij-nav-nvim
-            ];
+          startupPlugins = {
+            general =
+              builtins.attrValues {
+                inherit (pkgs.vimPlugins)
+                  blink-cmp
+                  bufferline-nvim
+                  catppuccin-nvim
+                  conform-nvim
+                  gitsigns-nvim
+                  grapple-nvim
+                  guess-indent-nvim
+                  hunk-nvim
+                  lazy-nvim
+                  luasnip
+                  mini-nvim
+                  neoconf-nvim
+                  nvim-autopairs
+                  nvim-highlight-colors
+                  nvim-spectre
+                  nvim-treesitter-context
+                  # TODO: Re-enable once it's no longer broken on nixpkgs
+                  # Evaluate whether I even need this plugin.:w
+                  #
+                  # nvim-treesitter-textobjects
+                  nvim-ts-autotag
+                  nvim-ts-context-commentstring
+                  nvim-web-devicons
+                  oil-nvim
+                  persistence-nvim
+                  plenary-nvim
+                  promise-async
+                  snacks-nvim
+                  tiny-inline-diagnostic-nvim
+                  treesitter-modules-nvim
+                  trouble-nvim
+                  undotree
+                  vim-css-color
+                  vim-go
+                  vim-illuminate
+                  vim-matchup
+                  virt-column-nvim
+                  which-key-nvim
+                  wilder-nvim
+                  yuck-vim
+                  zellij-nav-nvim
+                  ;
 
-            full = with pkgs.vimPlugins; [
-              fidget-nvim
-              flash-nvim
-              lazydev-nvim
-              marp-nvim
-              no-neck-pain-nvim
-              nvim-dap
-              nvim-dap-python
-              nvim-dap-ui
-              nvim-lspconfig
-              nvim-notify
-              otter-nvim
-              pnpm-nvim
-              todo-comments-nvim
-              venv-selector-nvim
-            ];
+              }
+              ++ [
+                pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+              ];
+
+            full =
+              builtins.attrValues {
+                inherit (pkgs.vimPlugins)
+                  fidget-nvim
+                  flash-nvim
+                  lazydev-nvim
+                  no-neck-pain-nvim
+                  nvim-dap
+                  nvim-dap-python
+                  nvim-dap-ui
+                  nvim-lspconfig
+                  nvim-notify
+                  otter-nvim
+                  todo-comments-nvim
+                  ;
+              }
+              ++ [
+                marp-nvim
+                pnpm-nvim
+                venv-selector-nvim
+              ];
 
             haskell = [
-              haskell-tools-nvim
+              pkgs.vimPlugins.haskell-tools-nvim
             ];
           };
 
@@ -243,9 +269,11 @@
           # shared libraries to be added to LD_LIBRARY_PATH
           # variable available to nvim runtime
           sharedLibraries = {
-            # general = with pkgs; [
-            # libgit2
-            # ];
+            # general = builtins.attrValues {
+            # inherit (pkgs)
+            #  libgit2
+            #  ;
+            # };
           };
 
           # environmentVariables:
