@@ -190,7 +190,6 @@
                 catppuccin-nvim
                 conform-nvim
                 gitsigns-nvim
-                grapple-nvim
                 guess-indent-nvim
                 hunk-nvim
                 lazy-nvim

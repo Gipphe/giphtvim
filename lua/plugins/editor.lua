@@ -60,41 +60,6 @@ return {
   },
 
   {
-    'cbochs/grapple.nvim',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
-    event = { 'BufReadPost', 'BufNewFile' },
-    cmd = 'Grapple',
-    opts = { scope = 'git' },
-    keys = {
-      {
-        '<leader>a',
-        function()
-          require('grapple').toggle()
-          vim.notify('Tagged in Grapple', vim.log.levels.INFO)
-        end,
-        desc = 'Tag a file Grapple',
-      },
-      {
-        '<C-e>',
-        '<cmd>Grapple toggle_tags<cr>',
-        desc = 'Toggle tags menu',
-      },
-      {
-        '<leader>p',
-        '<cmd>Grapple cycle_tags prev<cr>',
-        desc = 'Go to previous tag',
-      },
-      {
-        '<leader>n',
-        '<cmd>Grapple cycle_tags next<cr>',
-        desc = 'Go to next tag',
-      },
-    },
-  },
-
-  {
     'aca/marp.nvim',
     enabled = require('nixCatsUtils').enableForCategory 'full',
     main = 'marp.nvim',
