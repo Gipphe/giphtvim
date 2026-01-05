@@ -302,11 +302,6 @@ return {
   },
 
   {
-    'lukas-reineke/virt-column.nvim',
-    opts = {},
-  },
-
-  {
     'lewis6991/gitsigns.nvim',
     dependencies = {
       'folke/which-key.nvim',

@@ -221,7 +221,6 @@
                 vim-go
                 vim-illuminate
                 vim-matchup
-                virt-column-nvim
                 which-key-nvim
                 wilder-nvim
                 yuck-vim

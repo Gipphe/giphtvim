@@ -120,7 +120,7 @@ vim.opt.fillchars = {
 vim.opt.foldlevel = 99
 vim.opt.foldmethod = 'indent'
 
-vim.opt.colorcolumn = '80'
+vim.opt.colorcolumn = '+1,80'
 
 vim.opt.formatoptions = 'jcroqlnt'
 vim.opt.grepformat = '%f:%l:%c:%m'
