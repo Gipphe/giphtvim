@@ -121,6 +121,7 @@ return {
     --   -- 'nvim-treesitter/nvim-treesitter-refactor',
     -- },
     branch = 'main',
+    lazy = false,
     build = require('nixCatsUtils').lazyAdd ':TSUpdate',
     opts = {
       -- TODO: Find replacement compatible with nvim-treesitter main branch
