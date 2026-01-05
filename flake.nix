@@ -119,6 +119,7 @@
                   codespell
                   fd
                   fourmolu
+                  gcc # Required by tree-sitter
                   markdownlint-cli
                   nix-doc
                   nixfmt
