@@ -50,6 +50,12 @@ return {
     -- TODO: re-enable once it's no longer broken on nixpkgs
     enabled = false,
     dependencies = 'nvim-treesitter/nvim-treesitter',
+    init = function()
+      -- Disable entire built-in ftplugin mappings to avoid conflicts.
+      -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+      -- See https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/main?tab=readme-ov-file#using-a-package-manager
+      vim.g.no_plugin_maps = true
+    end,
     opts = {
       move = {
         enable = true,
