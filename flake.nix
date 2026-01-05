@@ -125,6 +125,7 @@
                   ripgrep
                   shfmt
                   stylua
+                  tree-sitter
                   universal-ctags
                   ;
               }
@@ -181,56 +182,53 @@
 
           # This is for plugins that will load at startup without using packadd:
           startupPlugins = {
-            general =
-              builtins.attrValues {
-                inherit (pkgs.vimPlugins)
-                  blink-cmp
-                  bufferline-nvim
-                  catppuccin-nvim
-                  conform-nvim
-                  gitsigns-nvim
-                  grapple-nvim
-                  guess-indent-nvim
-                  hunk-nvim
-                  lazy-nvim
-                  luasnip
-                  mini-nvim
-                  neoconf-nvim
-                  nvim-autopairs
-                  nvim-highlight-colors
-                  nvim-spectre
-                  nvim-treesitter-context
-                  # TODO: Re-enable once it's no longer broken on nixpkgs
-                  # Evaluate whether I even need this plugin.:w
-                  #
-                  # nvim-treesitter-textobjects
-                  nvim-ts-autotag
-                  nvim-ts-context-commentstring
-                  nvim-web-devicons
-                  oil-nvim
-                  persistence-nvim
-                  plenary-nvim
-                  promise-async
-                  snacks-nvim
-                  tiny-inline-diagnostic-nvim
-                  treesitter-modules-nvim
-                  trouble-nvim
-                  undotree
-                  vim-css-color
-                  vim-go
-                  vim-illuminate
-                  vim-matchup
-                  virt-column-nvim
-                  which-key-nvim
-                  wilder-nvim
-                  yuck-vim
-                  zellij-nav-nvim
-                  ;
+            general = builtins.attrValues {
+              inherit (pkgs.vimPlugins)
+                blink-cmp
+                bufferline-nvim
+                catppuccin-nvim
+                conform-nvim
+                gitsigns-nvim
+                grapple-nvim
+                guess-indent-nvim
+                hunk-nvim
+                lazy-nvim
+                luasnip
+                mini-nvim
+                neoconf-nvim
+                nvim-autopairs
+                nvim-highlight-colors
+                nvim-spectre
+                nvim-treesitter
+                nvim-treesitter-context
+                # TODO: Re-enable once it's no longer broken on nixpkgs
+                # Evaluate whether I even need this plugin.:w
+                #
+                # nvim-treesitter-textobjects
+                nvim-ts-autotag
+                nvim-ts-context-commentstring
+                nvim-web-devicons
+                oil-nvim
+                persistence-nvim
+                plenary-nvim
+                promise-async
+                snacks-nvim
+                tiny-inline-diagnostic-nvim
+                treesitter-modules-nvim
+                trouble-nvim
+                undotree
+                vim-css-color
+                vim-go
+                vim-illuminate
+                vim-matchup
+                virt-column-nvim
+                which-key-nvim
+                wilder-nvim
+                yuck-vim
+                zellij-nav-nvim
+                ;
 
-              }
-              ++ [
-                pkgs.vimPlugins.nvim-treesitter.withAllGrammars
-              ];
+            };
 
             full =
               builtins.attrValues {

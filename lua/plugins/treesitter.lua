@@ -83,8 +83,13 @@ return {
     ---@module 'treesitter-modules'
     ---@type ts.mod.UserConfig
     opts = {
-      ensure_installed = require('nixCatsUtils').whenNotNixCatsElse { 'stable' },
-      auto_install = not require('nixCatsUtils').isNixCats,
+      -- TODO: Uncomment these lines once the nixpkgs-provided grammars work
+      -- correctly.
+      --
+      -- ensure_installed = require('nixCatsUtils').whenNotNixCatsElse { 'stable' },
+      -- auto_install = not require('nixCatsUtils').isNixCats,
+      -- ensure_installed = {'stable'},
+      auto_install = true,
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
@@ -164,6 +169,8 @@ return {
       -- is an option for this.
       -- require('nvim-treesitter.install').prefer_git = not util.is_windows()
 
+      require('nvim-treesitter').setup(opts)
+
       local hl_group = vim.api.nvim_create_augroup('highlight_nbsp', { clear = true })
       vim.api.nvim_create_autocmd('ColorScheme', {
         group = hl_group,
@@ -175,64 +182,6 @@ return {
         -- pressing AltGr+Space on Linux. Code usually doesn't like it though.
         command = "call matchadd('BreakSpaceChar', ' ')",
       })
-      -- local ts_group = vim.api.nvim_create_augroup('nvim-treesitter', { clear = true })
-      -- vim.api.nvim_create_autocmd('FileType', {
-      --   group = ts_group,
-      --   callback = function(event)
-      --     local treesitter = require 'nvim-treesitter'
-      --     local parsers = require 'nvim-treesitter.parsers'
-      --     if not parsers[event.match] or not treesitter.install then
-      --       return
-      --     end
-      --
-      --     local ft = vim.bo[event.buf].filetype
-      --     local lang = vim.treesitter.language.get_lang(ft)
-      --
-      --     local ts_installed_langs = treesitter.get_installed()
-      --
-      --     local runtime_installed_parsers = vim.tbl_map(function(l)
-      --       return vim.fn.fnamemodify(l, ':t:r')
-      --     end, vim.api.nvim_get_runtime_file('parser/*', true))
-      --
-      --     local installed_langs = vim.tbl_extend('force', ts_installed_langs, runtime_installed_parsers)
-      --
-      --     local init_ts = function()
-      --       if not vim.tbl_contains(installed_langs, ft) then
-      --         -- We have not installed the parser for the
-      --         -- language. Could be because we're using Nix and NixCats, and we
-      --         -- just don't have the parser from nixpkgs.
-      --         return
-      --       end
-      --
-      --       -- Syntax highlighting
-      --       vim.treesitter.start()
-      --
-      --       -- Folds
-      --       vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      --       vim.wo[0][0].foldmethod = 'expr'
-      --
-      --       -- Indentation
-      --       vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-      --     end
-      --
-      --     if not require('nixCatsUtils').isNixCats then
-      --       -- NOTE: Without NixCats and nix, we have to have nvim-treesitter
-      --       -- install the parsers.
-      --       treesitter.install({ lang }):await(function(err)
-      --         if err then
-      --           vim.notify('Treesitter install error for ft: ' .. ft .. ' err: ' .. err)
-      --           return
-      --         end
-      --         installed_langs = vim.tbl_extend('force', installed_langs, { lang })
-      --         init_ts()
-      --       end)
-      --     else
-      --       -- NOTE: Using NixCats, init treesitter: all parsers should already
-      --       -- be installed.
-      --       init_ts()
-      --     end
-      --   end,
-      -- })
     end,
   },
 }
