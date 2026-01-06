@@ -6,6 +6,38 @@ return {
   {
     'echasnovski/mini.nvim',
     version = false,
+    main = 'mini.sessions',
+    opts = {
+      autoread = true,
+    },
+    keys = {
+      {
+        '<leader>qs',
+        function()
+          MiniSessions.read()
+        end,
+        desc = 'Restore session',
+      },
+      {
+        '<leader>qn',
+        function()
+          MiniSessions.write(vim.fn.input 'Session name: ')
+        end,
+        desc = 'Create new session',
+      },
+      {
+        '<leader>qp',
+        function()
+          MiniSessions.select 'read'
+        end,
+        desc = 'Select session',
+      },
+    },
+  },
+
+  {
+    'echasnovski/mini.nvim',
+    version = false,
     main = 'mini.ai',
     opts = {
       n_lines = 500,

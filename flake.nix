@@ -209,7 +209,6 @@
                 nvim-ts-context-commentstring
                 nvim-web-devicons
                 oil-nvim
-                persistence-nvim
                 plenary-nvim
                 promise-async
                 snacks-nvim
