@@ -209,10 +209,6 @@
                 nvim-spectre
                 nvim-treesitter
                 nvim-treesitter-context
-                # TODO: Re-enable once it's no longer broken on nixpkgs
-                # Evaluate whether I even need this plugin.:w
-                #
-                # nvim-treesitter-textobjects
                 nvim-ts-autotag
                 nvim-ts-context-commentstring
                 nvim-web-devicons
