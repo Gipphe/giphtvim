@@ -226,25 +226,5 @@ return {
         footer = '',
       })
     end,
-    config = function(_, opts)
-      require('mini.starter').setup(opts)
-
-      -- Close starter when opening a file from it
-      vim.api.nvim_create_autocmd('User', {
-        group = mini_augroup,
-        pattern = 'MiniStarterOpened',
-        callback = function()
-          vim.api.nvim_create_autocmd('BufRead', {
-            group = mini_augroup,
-            once = true,
-            callback = function()
-              vim.schedule(function()
-                vim.cmd 'bdelete #'
-              end)
-            end,
-          })
-        end,
-      })
-    end,
   },
 }
