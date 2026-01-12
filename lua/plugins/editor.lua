@@ -1,5 +1,3 @@
-local util = require 'util'
-
 return {
   {
     'nvim-pack/nvim-spectre',
