@@ -200,6 +200,7 @@
                 mini-indentscope
                 mini-pairs
                 mini-sessions
+                mini-starter
                 mini-statusline
                 mini-surround
                 neoconf-nvim

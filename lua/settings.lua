@@ -75,7 +75,7 @@ vim.opt.scrolloff = 8
 -- Minimal number of screen columns to keep to the left and right of the cursor.
 vim.opt.sidescrolloff = 8
 
-vim.opt.shortmess:append { F = true, W = true, I = true, c = true, C = true }
+vim.opt.shortmess:append { F = true, W = true, I = false, c = true, C = true }
 
 -- Confirm to save changes before leaving modified buffer
 vim.opt.confirm = true

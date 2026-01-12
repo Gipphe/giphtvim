@@ -209,4 +209,42 @@ return {
       end
     end,
   },
+
+  {
+    'nvim-mini/mini.starter',
+    version = false,
+    lazy = false,
+    opts = function(_, opts)
+      local starter = require 'mini.starter'
+      return vim.tbl_deep_extend('force', opts or {}, {
+        items = {
+          starter.sections.sessions(5, true),
+          starter.sections.recent_files(5, false),
+          starter.sections.builtin_actions(),
+        },
+        header = '',
+        footer = '',
+      })
+    end,
+    config = function(_, opts)
+      require('mini.starter').setup(opts)
+
+      -- Close starter when opening a file from it
+      vim.api.nvim_create_autocmd('User', {
+        group = mini_augroup,
+        pattern = 'MiniStarterOpened',
+        callback = function()
+          vim.api.nvim_create_autocmd('BufRead', {
+            group = mini_augroup,
+            once = true,
+            callback = function()
+              vim.schedule(function()
+                vim.cmd 'bdelete #'
+              end)
+            end,
+          })
+        end,
+      })
+    end,
+  },
 }
