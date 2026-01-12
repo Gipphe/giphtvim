@@ -199,7 +199,6 @@
                 mini-comment
                 mini-indentscope
                 mini-pairs
-                mini-starter
                 mini-statusline
                 mini-surround
                 neoconf-nvim

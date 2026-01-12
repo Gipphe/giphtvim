@@ -151,22 +151,4 @@ return {
       end
     end,
   },
-
-  {
-    'nvim-mini/mini.starter',
-    version = false,
-    lazy = false,
-    opts = function(_, opts)
-      local starter = require 'mini.starter'
-      return vim.tbl_deep_extend('force', opts or {}, {
-        items = {
-          starter.sections.sessions(5, true),
-          starter.sections.recent_files(5, false),
-          starter.sections.builtin_actions(),
-        },
-        header = '',
-        footer = '',
-      })
-    end,
-  },
 }
