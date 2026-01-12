@@ -133,6 +133,42 @@ return {
     },
   },
 
+  {
+    'folke/persistence.nvim',
+    event = 'BufReadPre',
+    opts = {},
+    keys = {
+      {
+        '<leader>qs',
+        function()
+          require('persistence').load()
+        end,
+        desc = 'Restore session',
+      },
+      {
+        '<leader>ql',
+        function()
+          require('persistence').load { last = true }
+        end,
+        desc = 'Restore last session',
+      },
+      {
+        '<leader>qd',
+        function()
+          require('persistence').stop()
+        end,
+        desc = 'Do not save current session',
+      },
+      {
+        '<leader>qp',
+        function()
+          require('persistence').select()
+        end,
+        desc = 'Select session to restore',
+      },
+    },
+  },
+
   -- Detect tabstop and shiftwidth automatically
   {
     'NMAC427/guess-indent.nvim',

@@ -1,66 +1,8 @@
 -- Collection of various small independent plugins/modules
 
 local mini_augroup = vim.api.nvim_create_augroup('mini', { clear = true })
-local mini_session = 'Session.vim'
 
 return {
-  {
-    'nvim-mini/mini.sessions',
-    version = false,
-    lazy = false,
-    opts = {
-      autoread = true,
-      autowrite = true,
-      file = mini_session,
-      force = {
-        read = true,
-        write = true,
-        delete = false,
-      },
-    },
-    keys = {
-      {
-        '<leader>qs',
-        function()
-          require('mini.sessions').read()
-        end,
-        desc = 'Restore session',
-      },
-      {
-        '<leader>qn',
-        function()
-          require('mini.sessions').write(vim.fn.input 'Session name: ')
-        end,
-        desc = 'Create new session',
-      },
-      {
-        '<leader>qp',
-        function()
-          require('mini.sessions').select 'read'
-        end,
-        desc = 'Select session',
-      },
-      {
-        '<leader>qe',
-        function()
-          vim.f.minisessions_do_not_write = true
-          vim.fn.quit()
-        end,
-        desc = 'Quit without saving',
-      },
-      {
-        '<leader>qa',
-        function()
-          if require('mini.sessions').detected[mini_session] ~= nil then
-            require('mini.sessions').delete(mini_session)
-          end
-          vim.cmd 'qa!'
-        end,
-        desc = 'Quit and delete session',
-      },
-    },
-  },
-
   {
     'nvim-mini/mini.ai',
     version = false,
