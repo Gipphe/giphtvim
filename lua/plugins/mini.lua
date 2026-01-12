@@ -14,21 +14,21 @@ return {
       {
         '<leader>qs',
         function()
-          MiniSessions.read()
+          require('mini.sessions').read()
         end,
         desc = 'Restore session',
       },
       {
         '<leader>qn',
         function()
-          MiniSessions.write(vim.fn.input 'Session name: ')
+          require('mini.sessions').write(vim.fn.input 'Session name: ')
         end,
         desc = 'Create new session',
       },
       {
         '<leader>qp',
         function()
-          MiniSessions.select 'read'
+          require('mini.sessions').select 'read'
         end,
         desc = 'Select session',
       },
