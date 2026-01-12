@@ -194,7 +194,14 @@
                 hunk-nvim
                 lazy-nvim
                 luasnip
-                mini-nvim
+                mini-ai
+                mini-bufremove
+                mini-comment
+                mini-indentscope
+                mini-pairs
+                mini-sessions
+                mini-statusline
+                mini-surround
                 neoconf-nvim
                 nvim-autopairs
                 nvim-highlight-colors

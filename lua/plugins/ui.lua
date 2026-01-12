@@ -6,7 +6,7 @@ return {
     version = '*',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
-      'echasnovski/mini.nvim',
+      'nvim-mini/mini.bufremove',
     },
     ---@module 'bufferline'
     ---@type bufferline.UserConfig

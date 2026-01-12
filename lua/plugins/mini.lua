@@ -4,9 +4,8 @@ local mini_augroup = vim.api.nvim_create_augroup('mini', { clear = true })
 
 return {
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.sessions',
     version = false,
-    main = 'mini.sessions',
     opts = {
       autoread = true,
     },
@@ -36,18 +35,16 @@ return {
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.ai',
     version = false,
-    main = 'mini.ai',
     opts = {
       n_lines = 500,
     },
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.surround',
     version = false,
-    main = 'mini.surround',
     event = 'BufReadPost',
     opts = {
       mappings = {
@@ -63,9 +60,8 @@ return {
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.pairs',
     version = false,
-    main = 'mini.pairs',
     opts = {},
     init = function()
       vim.g.minipairs_disable = true
@@ -87,12 +83,11 @@ return {
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.comment',
     version = false,
     dependencies = {
       'JoosepAlviste/nvim-ts-context-commentstring',
     },
-    main = 'mini.comment',
     opts = {
       options = {
         custom_commentstring = function()
@@ -103,9 +98,8 @@ return {
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.bufremove',
     version = false,
-    main = 'mini.bufremove',
     opts = {},
     keys = {
       {
@@ -137,9 +131,8 @@ return {
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.indentscope',
     version = false,
-    main = 'mini.indentscope',
     opts = {},
     config = function(_, opts)
       require('mini.indentscope').setup(opts)
@@ -167,9 +160,8 @@ return {
   },
 
   {
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.statusline',
     version = false,
-    main = 'mini.statusline',
     opts = {
       use_icons = vim.g.have_nerd_font,
     },
