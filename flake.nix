@@ -189,7 +189,6 @@
                 mini-pairs
                 mini-statusline
                 mini-surround
-                neoconf-nvim
                 nvim-autopairs
                 nvim-highlight-colors
                 nvim-spectre

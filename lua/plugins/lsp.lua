@@ -34,8 +34,6 @@ return {
       },
       'folke/lazydev.nvim',
       'lukahartwig/pnpm.nvim',
-      -- Does not work correctly in Neovim v0.11 with vim.lsp.
-      -- 'folke/neoconf.nvim',
       'saghen/blink.cmp',
     },
     opts = function(opts)
