@@ -227,7 +227,6 @@
                   fidget-nvim
                   flash-nvim
                   lazydev-nvim
-                  no-neck-pain-nvim
                   nvim-dap
                   nvim-dap-python
                   nvim-dap-ui

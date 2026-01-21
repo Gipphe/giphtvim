@@ -392,39 +392,6 @@ return {
       disable_filetype = { 'TelescopePrompt', 'vim' },
     },
   },
-  {
-    'shortcuts/no-neck-pain.nvim',
-    dependencies = {
-      'folke/which-key.nvim',
-      opts = {
-        { '<leader>un', group = '+NoNeckPain', mode = 'n' },
-      },
-    },
-    enabled = nixCats 'full',
-    version = '*',
-    keys = {
-      {
-        '<leader>unn',
-        '<cmd>NoNeckPain<cr>',
-        desc = 'Toggle NoNeckPain',
-      },
-      {
-        '<leader>unk',
-        '<cmd>NoNeckPainWidthUp<cr>',
-        desc = 'Increase NoNeckPain width',
-      },
-      {
-        '<leader>unj',
-        '<cmd>NoNeckPainWidthDown<cr>',
-        desc = 'Decrease NoNeckPain width',
-      },
-      {
-        '<leader>uns',
-        '<cmd>NoNeckPainScratchPad<cr>',
-        desc = 'Use NoNeckPain scratch pad',
-      },
-    },
-  },
 
   {
     'julienvincent/hunk.nvim',
