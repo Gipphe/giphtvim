@@ -81,16 +81,6 @@
               hash = "sha256-aVQsE3aQRH0t7FRtOYlc4+sqcycpa0VBGrww2anEJmA=";
             };
           };
-          venv-selector-nvim = pkgs.vimUtils.buildVimPlugin {
-            pname = "venv-selector.nvim";
-            version = "2025-04-02";
-            src = pkgs.fetchFromGitHub {
-              owner = "linux-cultist";
-              repo = "venv-selector.nvim";
-              rev = "8d7224af54a02f9385c4f77eadf21e5b2407d860";
-              hash = "sha256-09Zv4nMl9iw3ZrlGIROERcvlDXf1z5JpAEIyYdaqgIA=";
-            };
-          };
           pnpm-nvim = pkgs.vimUtils.buildVimPlugin {
             pname = "pnpm.nvim";
             version = "2025-04-02";
@@ -245,12 +235,12 @@
                   nvim-notify
                   otter-nvim
                   todo-comments-nvim
+                  venv-selector-nvim
                   ;
               }
               ++ [
                 marp-nvim
                 pnpm-nvim
-                venv-selector-nvim
               ];
 
             haskell = [

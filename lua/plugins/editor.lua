@@ -39,18 +39,14 @@ return {
     enabled = require('nixCatsUtils').enableForCategory 'full',
     dependencies = {
       'neovim/nvim-lspconfig',
-      'mfussenegger/nvim-dap',
-      'mfussenegger/nvim-dap-python',
       'folke/snacks.nvim',
     },
-    lazy = false,
-    branch = require('nixCatsUtils').isNixCats or 'regexp',
+    ft = 'python',
     ---@module 'venv-selector'
     ---@type venv-selector.Config
     opts = {
-      options = {
-        picker = 'snacks',
-      },
+      search = {},
+      options = {},
     },
     keys = {
       { '<leader>cv', '<cmd>VenvSelect<cr>', desc = 'Select VirtualEnv' },
