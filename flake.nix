@@ -153,9 +153,10 @@
                   ;
               }
               ++ [
-                pkgs.elmPackages.elm-language-server
                 pkgs.kdePackages.qtdeclarative
               ];
+
+            elm = [ pkgs.elmPackages.elm-language-server ];
 
             basedpyright = [ pkgs.basedpyright ];
 

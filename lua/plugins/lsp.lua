@@ -60,7 +60,6 @@ return {
         -- 'basedpyright',
         'bashls',
         -- 'dockerls',
-        'elmls',
         'jsonls',
         'html',
         -- 'qmlls',
@@ -79,6 +78,10 @@ return {
         'lua_ls',
         'nil_ls',
       }
+
+      if require('nixCatsUtils').enableForCategory 'elm' then
+        table.insert(servers, 'elmls')
+      end
 
       if require('nixCatsUtils').isNixCats then
         -- NOTE: nixCats: nixd is not available on mason.
