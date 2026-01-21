@@ -71,7 +71,6 @@ return {
         'tailwindcss',
         'fish_lsp',
         'terraformls',
-        -- 'metals',
         'yamlls',
         -- 'sqls',
         'ts_ls',

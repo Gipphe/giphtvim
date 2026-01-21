@@ -136,7 +136,6 @@
                   lemminx
                   lua-language-server
                   marksman
-                  metals
                   nil
                   nixd
                   opentofu
