@@ -207,7 +207,6 @@
                 trouble-nvim
                 undotree
                 vim-css-color
-                vim-go
                 vim-illuminate
                 vim-matchup
                 which-key-nvim
@@ -217,6 +216,8 @@
                 ;
 
             };
+
+            go = [ pkgs.vimPlugins.vim-go ];
 
             full =
               builtins.attrValues {

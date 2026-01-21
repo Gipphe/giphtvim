@@ -405,6 +405,7 @@ return {
 
   {
     'fatih/vim-go',
+    enabled = require('nixCatsUtils').enableForCategory 'go',
     ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },
     config = function()
       vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufWinEnter', 'BufWritePre' }, {
