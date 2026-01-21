@@ -394,16 +394,6 @@ return {
   },
 
   {
-    'julienvincent/hunk.nvim',
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'neo-tree/nvim-web-devicons',
-    },
-    cmd = { 'DiffEditor' },
-    opts = {},
-  },
-
-  {
     'fatih/vim-go',
     enabled = require('nixCatsUtils').enableForCategory 'go',
     ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },

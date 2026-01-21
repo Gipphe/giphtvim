@@ -179,7 +179,6 @@
                 conform-nvim
                 gitsigns-nvim
                 guess-indent-nvim
-                hunk-nvim
                 lazy-nvim
                 luasnip
                 mini-ai
