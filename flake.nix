@@ -163,8 +163,6 @@
             haskell = builtins.attrValues {
               inherit (pkgs.haskellPackages)
                 fast-tags
-                ghci-dap
-                haskell-debug-adapter
                 haskell-language-server
                 hoogle
                 ;
@@ -227,9 +225,6 @@
                   fidget-nvim
                   flash-nvim
                   lazydev-nvim
-                  nvim-dap
-                  nvim-dap-python
-                  nvim-dap-ui
                   nvim-lspconfig
                   nvim-notify
                   otter-nvim
@@ -242,9 +237,7 @@
                 pnpm-nvim
               ];
 
-            haskell = [
-              pkgs.vimPlugins.haskell-tools-nvim
-            ];
+            haskell = [ pkgs.vimPlugins.haskell-tools-nvim ];
           };
 
           # not loaded automatically at startup.
@@ -341,11 +334,7 @@
 
             extra = {
               nixd = {
-                nixpkgs = ''import ${pkgs.path} {}'';
-                home_manager = ''(builtins.getFlake "${inputs.self}").nixosConfigurations.argon.options.home-manager.users.type.getSubOptions []'';
-                nixos_options = ''(builtins.getFlake "${inputs.self}").nixosConfigurations.argon.options'';
-                darwin_options = ''(builtins.getFlake "${inputs.self}").darwinConfigurations.silicon.options'';
-                droid_options = ''(builtins.getFlake "${inputs.self}").nixOnDroidConfigurations.helium.options'';
+                nixpkgs = "import ${pkgs.path} {}";
               };
             };
           };
@@ -401,7 +390,6 @@
             name = defaultPackageName;
             packages = [ defaultPackage ];
             inputsFrom = [ ];
-            shellHook = '''';
           };
         };
       }
