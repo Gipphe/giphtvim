@@ -26,11 +26,45 @@ return {
     ---@type Flash.Config
     opts = {},
     keys = {
-      { 's', require('flash').jump, mode = { 'n', 'x', 'o' }, desc = 'Flash' },
-      { 'S', require('flash').treesitter, mode = { 'n', 'x', 'o' }, desc = 'Flash treesitter' },
-      { 'r', require('flash').remote, mode = 'o', desc = 'Remote flash' },
-      { 'R', require('flash').treesitter_search, desc = 'Treesitter search' },
-      { '<C-s>', require('flash').toggle, mode = 'c', desc = 'Toggle flash search' },
+      {
+        's',
+        function()
+          require('flash').jump()
+        end,
+        mode = { 'n', 'x', 'o' },
+        desc = 'Flash',
+      },
+      {
+        'S',
+        function()
+          require('flash').treesitter()
+        end,
+        mode = { 'n', 'x', 'o' },
+        desc = 'Flash treesitter',
+      },
+      {
+        'r',
+        function()
+          require('flash').remote()
+        end,
+        mode = 'o',
+        desc = 'Remote flash',
+      },
+      {
+        'R',
+        function()
+          require('flash').treesitter_search()
+        end,
+        desc = 'Treesitter search',
+      },
+      {
+        '<C-s>',
+        function()
+          require('flash').toggle()
+        end,
+        mode = 'c',
+        desc = 'Toggle flash search',
+      },
     },
   },
 
