@@ -110,6 +110,7 @@
                   fd
                   fourmolu
                   gcc # Required by tree-sitter
+                  gzip # Required by tree-sitter
                   markdownlint-cli
                   nix-doc
                   nixfmt
