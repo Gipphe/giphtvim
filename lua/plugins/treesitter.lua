@@ -93,36 +93,7 @@ return {
     lazy = false,
     build = require('nixCatsUtils').lazyAdd ':TSUpdate',
     opts = {
-      -- TODO: Find replacement compatible with nvim-treesitter main branch
-      -- Do I even need this? I use LSP for the `navigation` stuff,
-      -- and smart renaming could probably be handled by the LSP as
-      -- well.
-      --
-      -- refactor = {
-      --   highlight_current_scope = {
-      --     -- Basically highlight huge swaths of code all the time.
-      --     enable = false,
-      --   },
-      --   highlight_definitions = {
-      --     enable = true,
-      --     clear_on_cursor_move = false,
-      --   },
-      --   navigation = {
-      --     enable = true,
-      --     keymaps = {
-      --       goto_definition = 'gd',
-      --       list_definitions = 'gD',
-      --       goto_next_usage = '<a-*>',
-      --       goto_previous_usage = '<a-#>',
-      --     },
-      --   },
-      --   smart_rename = {
-      --     enable = true,
-      --     keymaps = {
-      --       smart_rename = '<leader>cr',
-      --     },
-      --   },
-      -- },
+      install_dir = vim.fn.stdpath 'data' .. '/site',
     },
     keys = {
       -- TODO: Find nvim-treesitter main branch equivalent
