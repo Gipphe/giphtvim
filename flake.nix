@@ -189,7 +189,6 @@
                 mini-surround
                 nvim-autopairs
                 nvim-highlight-colors
-                nvim-spectre
                 nvim-treesitter
                 nvim-treesitter-context
                 nvim-ts-autotag
@@ -200,12 +199,9 @@
                 plenary-nvim
                 promise-async
                 snacks-nvim
-                tiny-inline-diagnostic-nvim
                 treesitter-modules-nvim
-                trouble-nvim
                 undotree
                 vim-css-color
-                vim-illuminate
                 vim-matchup
                 which-key-nvim
                 wilder-nvim
@@ -225,9 +221,13 @@
                   lazydev-nvim
                   nvim-lspconfig
                   nvim-notify
+                  nvim-spectre
                   otter-nvim
+                  tiny-inline-diagnostic-nvim
                   todo-comments-nvim
+                  trouble-nvim
                   venv-selector-nvim
+                  vim-illuminate
                   ;
               }
               ++ [

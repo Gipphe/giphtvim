@@ -1,6 +1,7 @@
 return {
   {
     'nvim-pack/nvim-spectre',
+    enabled = require('nixCatsUtils').enableForCategory 'full',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'folke/trouble.nvim',
@@ -207,6 +208,7 @@ return {
 
   {
     'folke/trouble.nvim',
+    enabled = require('nixCatsUtils').enableForCategory 'full',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -265,6 +267,7 @@ return {
 
   {
     'RRethy/vim-illuminate',
+    enabled = require('nixCatsUtils').enableForCategory 'full',
     event = 'BufReadPre',
     opts = {
       delay = 200,
@@ -399,6 +402,7 @@ return {
 
   {
     'rachartier/tiny-inline-diagnostic.nvim',
+    enabled = require('nixCatsUtils').enableForCategory 'full',
     event = 'VeryLazy',
     priority = 1000,
     config = function()
