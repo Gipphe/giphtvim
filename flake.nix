@@ -317,14 +317,14 @@
             # (and other information to pass to lua)
             categories = {
               general = true;
-              full = true;
+              full = false;
 
-              haskell = true;
+              haskell = false;
 
               # we can pass whatever we want actually.
               have_nerd_font = true;
 
-              droid = false;
+              droid = true;
 
               powershell_es = "${pkgs.powershell-editor-services}";
             };

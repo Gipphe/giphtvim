@@ -1,0 +1,46 @@
+
+
+   lazy.nvim 󰒲   Install (I)   Update (U)
+   Sync (S)   Clean (X)   Check (C)   Log (L)
+   Restore (R)   Profile (P)   Debug (D)
+   Help (?)
+
+  Total: 32 plugins
+
+  Loaded (21)
+    ● blink.cmp 185.12ms  VimEnter
+    ● bufferline.nvim 78.38ms  VeryLazy
+    ● catppuccin-nvim 146.59ms  start
+    ● conform.nvim 47.65ms  start
+    ● lazy.nvim 651.12ms  init.lua
+    ● luasnip 108.27ms  blink.cmp
+    ● mini.ai 34.74ms  start
+    ● mini.bufremove 44.46ms  bufferline.nvim
+    ● mini.comment 81.65ms  start
+    ● mini.indentscope 33.07ms  start
+    ● mini.statusline 43.02ms  start
+    ● nvim-treesitter 58.33ms  start
+    ● nvim-treesitter-context 61.65ms  start
+    ● nvim-ts-autotag 66.85ms  start
+    ● nvim-ts-context-commentstring 75.46ms  mini.comment
+    ● nvim-web-devicons 29.59ms  snacks.nvim
+    ● snacks.nvim 96.95ms  start
+    ● treesitter-modules.nvim 83.17ms  start
+    ● which-key.nvim 54.1ms  snacks.nvim
+    ● wilder.nvim 85.06ms  start
+    ● zellij-nav.nvim 25.19ms  VeryLazy
+
+  Not Loaded (4)
+    ○ mini.pairs  <leader>up
+    ○ mini.surround  BufReadPost
+    ○ nvim-highlight-colors  BufReadPost
+    ○ vim-matchup  BufReadPre
+
+  Disabled (7)
+    ○ haskell-tools.nvim
+    ○ lazydev.nvim
+    ○ nvim-lspconfig
+    ○ otter.nvim
+    ○ pnpm.nvim
+    ○ todo-comments.nvim
+    ○ yuck.vim
