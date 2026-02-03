@@ -107,7 +107,7 @@ return {
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     ---@type wk.Spec
     opts = {
-      -- TODO Should these groups be separated so that I can easily reference them in actual keybinding definitions?
+      -- TODO: Should these groups be separated so that I can easily reference them in actual keybinding definitions?
       { 'g', group = '+goto', mode = { 'n', 'v' } },
       { 'gs', group = '+surround', mode = { 'n', 'v' } },
       { 'z', group = '+fold', mode = { 'n', 'v' } },
@@ -124,7 +124,7 @@ return {
       { '<leader>w', group = '+windows', mode = { 'n', 'v' } },
       { '<leader>x', group = '+diagnostics/quickfix', mode = { 'n', 'v' } },
       { '<leader>t', group = '+telescope', mode = { 'n', 'v' } },
-      -- TODO Are any of these relevant now?
+      -- TODO: Are any of these relevant now?
       -- { '<leader>c', group = 'Code' },
       -- { '<leader>c_', hidden = true },
       -- { '<leader>d', group = 'Document' },

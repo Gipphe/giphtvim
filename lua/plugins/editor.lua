@@ -5,7 +5,7 @@ return {
       'nvim-tree/nvim-web-devicons',
       'folke/trouble.nvim',
     },
-    -- TODO Figure out whether I need this. Keys conflict with bundled Telescope bindings.
+    -- TODO: Figure out whether I need this. Keys conflict with bundled Telescope bindings.
     enable = false,
     opts = {},
     keys = {
@@ -220,7 +220,7 @@ return {
       { '<leader>xL', '<cmd>Trouble loclist toggle<cr>', desc = 'Location List (Trouble)' },
       { '<leader>xQ', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix List (Trouble)' },
 
-      -- TODO Figure out whether any of these are worth keeping.
+      -- TODO: Figure out whether any of these are worth keeping.
       -- { '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>', desc = 'Document Diagnostics (Trouble)' },
       -- { '<leader>xX', '<cmd>TroubleToggle workspace_diagnostics<cr>', desc = 'Workspace Diagnostics (Trouble)' },
       -- { '<leader>xL', '<cmd>TroubleToggle loclist<cr>', desc = 'Location List (Trouble)' },
