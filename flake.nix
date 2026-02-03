@@ -159,8 +159,6 @@
 
             elm = [ pkgs.elmPackages.elm-language-server ];
 
-            basedpyright = [ pkgs.basedpyright ];
-
             haskell = builtins.attrValues {
               inherit (pkgs.haskellPackages)
                 fast-tags
@@ -322,7 +320,6 @@
               full = true;
 
               haskell = true;
-              basedpyright = true;
 
               # we can pass whatever we want actually.
               have_nerd_font = true;

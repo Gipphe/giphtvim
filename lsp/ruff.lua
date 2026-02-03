@@ -1,9 +1,7 @@
 return {
   on_attach = function(client)
     -- Disable hover in favour of Pyright
-    if require('nixCatsUtils').enableForCategory 'basedpyright' then
-      client.server_capabilities.hoverProvider = false
-    end
+    client.server_capabilities.hoverProvider = false
     vim.keymap.set('n', '<leader>co', function()
       vim.lsp.buf.code_action {
         apply = true,
