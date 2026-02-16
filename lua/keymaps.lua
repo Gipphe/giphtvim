@@ -17,16 +17,6 @@ vim.keymap.del('i', '<C-S>')
 vim.opt.hlsearch = true
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
-map('n', '[d', function()
-  vim.diagnostic.jump { count = -1, float = true }
-end, { desc = 'Go to previous [D]iagnostic message' })
-map('n', ']d', function()
-  vim.diagnostic.jump { count = 1, float = true }
-end, { desc = 'Go to next [D]iagnostic message' })
-map('n', '<leader>de', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-map('n', '<leader>dq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -165,7 +155,7 @@ map('v', '<', '<gv')
 map('v', '>', '>gv')
 
 -- New file
-map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New file' })
+map('n', '<leader>fn', '<cmd>new<cr>', { desc = 'New file' })
 
 -- Troubleshooting
 map('n', '<leader>xl', '<cmd>lopen<cr>', { desc = 'Location list' })
@@ -173,29 +163,30 @@ map('n', '<leader>xq', '<cmd>copen<cr>', { desc = 'Quickfix list' })
 map('n', '[q', vim.cmd.cprev, { desc = 'Previous Quickfix' })
 map('n', ']q', vim.cmd.cnext, { desc = 'Next Quickfix' })
 
-local diagnostic_goto = function(next, severity)
-  return function()
-    local count = -1
-    if next then
-      count = 1
-    end
-    local sev = nil
-    if type(severity) == 'string' then
-      sev = vim.diagnostic.severity[severity]
-    end
-    return function()
-      vim.diagnostic.jump { severity = sev, count = count, float = true }
-    end
-  end
+local diag_jumps = function()
+  local dj = vim.diagnostic.jump
+  local sev = vim.diagnostic.severity
+  map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line diagnostics' })
+  map('n', ']d', function()
+    dj { count = 1, float = true }
+  end, { desc = 'Next diagnostic' })
+  map('n', '[d', function()
+    dj { count = -1, float = true }
+  end, { desc = 'Prev diagnostic' })
+  map('n', ']e', function()
+    dj { count = 1, float = true, severity = sev.ERROR }
+  end, { desc = 'Next error' })
+  map('n', '[e', function()
+    dj { count = -1, float = true, severity = sev.ERROR }
+  end, { desc = 'Prev error' })
+  map('n', ']w', function()
+    dj { count = 1, float = true, severity = sev.WARN }
+  end, { desc = 'Next warning' })
+  map('n', '[w', function()
+    dj { count = -1, float = true, severity = sev.WARN }
+  end, { desc = 'Prev warning' })
 end
-
-map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line diagnostics' })
-map('n', ']d', diagnostic_goto(true, nil), { desc = 'Next diagnostic' })
-map('n', '[d', diagnostic_goto(false, nil), { desc = 'Prev diagnostic' })
-map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next error' })
-map('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev error' })
-map('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next warning' })
-map('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev warning' })
+diag_jumps()
 
 map('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit all' })
 map('n', '<leader>ui', vim.show_pos, { desc = 'Inspect pos' })
