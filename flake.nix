@@ -317,9 +317,11 @@
             # (and other information to pass to lua)
             categories = {
               general = true;
-              full = false;
+              full = true;
 
-              haskell = false;
+              haskell = true;
+              go = false;
+              elm = false;
 
               # we can pass whatever we want actually.
               have_nerd_font = true;
@@ -343,9 +345,21 @@
           in
           pkg
           // {
-            categories = pkg.categories // {
-              droid = true;
+            settings = {
+              hosts = {
+                python3.enable = false;
+                node.enable = false;
+              };
             };
+            categories = pkg.categories // {
+              general = true;
+              full = false;
+
+              haskell = false;
+              droid = true;
+              powershell_es = null;
+            };
+            extra = { };
           };
       };
       # In this section, the main thing you will need to do is change the default package name
