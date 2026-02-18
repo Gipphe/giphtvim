@@ -330,12 +330,6 @@
 
               powershell_es = "${pkgs.powershell-editor-services}";
             };
-
-            extra = {
-              nixd = {
-                nixpkgs = "import ${pkgs.path} {}";
-              };
-            };
           };
 
         droid =
