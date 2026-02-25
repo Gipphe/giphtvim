@@ -1,4 +1,5 @@
 return {
+  enabled = nixCats 'js' or nixCats 'js',
   filetypes = vim.tbl_deep_extend('force', require('lspconfig.configs.tailwindcss').default_config.filetypes, { 'elm' }),
   settings = {
     tailwindCSS = {

@@ -1,4 +1,5 @@
 return {
+  enabled = nixCats 'python',
   on_attach = function(client)
     -- Disable hover in favour of Pyright
     client.server_capabilities.hoverProvider = false

@@ -108,15 +108,9 @@
                 inherit (pkgs)
                   codespell
                   fd
-                  fourmolu
                   gcc # Required by tree-sitter
                   gzip # Required by tree-sitter
-                  markdownlint-cli
-                  nix-doc
-                  nixfmt
                   ripgrep
-                  shfmt
-                  stylua
                   tree-sitter
                   universal-ctags
                   ;
@@ -127,41 +121,77 @@
                 self.packages.${pkgs.stdenv.hostPlatform.system}.prettier-with-plugins
               ];
 
-            full =
-              builtins.attrValues {
-                inherit (pkgs)
-                  bash-language-server
-                  dockerfile-language-server
-                  fish-lsp
-                  gopls
-                  lemminx
-                  lua-language-server
-                  marksman
-                  nil
-                  nixd
-                  opentofu
-                  powershell
-                  powershell-editor-services
-                  ruff
-                  rust-analyzer
-                  sqls
-                  tailwindcss-language-server
-                  terraform-ls
-                  tofu-ls
-                  typescript-language-server
-                  vscode-langservers-extracted
-                  yaml-language-server
-                  ;
-              }
-              ++ [
-                pkgs.kdePackages.qtdeclarative
-              ];
+            bash = builtins.attrValues {
+              inherit (pkgs)
+                bash-language-server
+                shfmt
+                ;
+            };
+            docker = [ pkgs.dockerfile-language-server ];
+            fish = [ pkgs.fish-lsp ];
+            go = [ pkgs.gopls ];
+            xml = [ pkgs.lemminx ];
+            lua = builtins.attrValues {
+              inherit (pkgs)
+                lua-language-server
+                stylua
+                ;
+            };
+            markdown = builtins.attrValues {
+              inherit (pkgs)
+                marksman
+                markdownlint-cli
+                ;
+            };
+            terraform = builtins.attrValues {
+              inherit (pkgs)
+                opentofu
+                terraform-ls
+                ;
+            };
+            powershell = builtins.attrValues {
+              inherit (pkgs)
+                powershell
+                powershell-editor-services
+                ;
+            };
+            python = [ pkgs.ruff ];
+            rust = [ pkgs.rust-analyzer ];
+            sql = [ pkgs.sqls ];
+            js = builtins.attrValues {
+              inherit (pkgs)
+                vscode-langservers-extracted
+                tailwindcss-language-server
+                ;
+            };
+            ts = builtins.attrValues {
+              inherit (pkgs)
+                vscode-langservers-extracted
+                tailwindcss-language-server
+                typescript-language-server
+                ;
+            };
+            html = [ pkgs.vscode-langservers-extracted ];
+            json = [ pkgs.vscode-langservers-extracted ];
+            yaml = [ pkgs.yaml-language-server ];
+
+            nix = builtins.attrValues {
+              inherit (pkgs)
+                nil
+                nix-doc
+                nixd
+                nixfmt
+                ;
+            };
+
+            yuck = [ pkgs.kdePackages.qtdeclarative ];
 
             elm = [ pkgs.elmPackages.elm-language-server ];
 
             haskell = builtins.attrValues {
               inherit (pkgs.haskellPackages)
                 fast-tags
+                fourmolu
                 haskell-language-server
                 hoogle
                 ;
@@ -205,7 +235,6 @@
                 vim-matchup
                 which-key-nvim
                 wilder-nvim
-                yuck-vim
                 zellij-nav-nvim
                 ;
 
@@ -213,27 +242,34 @@
 
             go = [ pkgs.vimPlugins.vim-go ];
 
-            full =
+            rich_ui = [ pkgs.vimPlugins.todo-comments-nvim ];
+
+            rich_editor =
               builtins.attrValues {
                 inherit (pkgs.vimPlugins)
-                  fidget-nvim
                   flash-nvim
-                  lazydev-nvim
-                  nvim-lspconfig
-                  nvim-notify
                   nvim-spectre
-                  otter-nvim
                   tiny-inline-diagnostic-nvim
-                  todo-comments-nvim
                   trouble-nvim
                   venv-selector-nvim
                   vim-illuminate
                   ;
               }
-              ++ [
-                marp-nvim
-                pnpm-nvim
-              ];
+              ++ [ marp-nvim ];
+
+            js = [ pnpm-nvim ];
+            ts = [ pnpm-nvim ];
+            yuck = [ pkgs.vimPlugins.yuck-vim ];
+
+            lsp = builtins.attrValues {
+              inherit (pkgs.vimPlugins)
+                fidget-nvim
+                nvim-lspconfig
+                otter-nvim
+                ;
+            };
+
+            lua = [ pkgs.vimPlugins.lazydev-nvim ];
 
             haskell = [ pkgs.vimPlugins.haskell-tools-nvim ];
           };
@@ -317,16 +353,35 @@
             # (and other information to pass to lua)
             categories = {
               general = true;
-              full = true;
+              lsp = true;
+              rich_ui = true;
+              rich_editor = true;
+              narrow_screen = false;
 
-              haskell = true;
-              go = false;
+              bash = true;
+              docker = false;
               elm = false;
+              fish = true;
+              go = false;
+              haskell = true;
+              html = true;
+              js = false;
+              lua = true;
+              markdown = true;
+              nix = true;
+              powershell = true;
+              python = true;
+              qml = false;
+              rust = true;
+              sql = true;
+              terraform = true;
+              ts = false;
+              xml = false;
+              yaml = true;
+              yuck = true;
 
               # we can pass whatever we want actually.
               have_nerd_font = true;
-
-              droid = true;
 
               powershell_es = "${pkgs.powershell-editor-services}";
             };
@@ -347,13 +402,35 @@
             };
             categories = pkg.categories // {
               general = true;
-              full = false;
+              lsp = false;
+              rich_ui = false;
+              rich_editor = false;
+              narrow_screen = true;
 
+              bash = false;
+              docker = false;
+              elm = false;
+              fish = false;
+              go = false;
               haskell = false;
-              droid = true;
+              html = false;
+              js = false;
+              lua = false;
+              markdown = true;
+              nix = false;
+              powershell = false;
+              python = false;
+              qml = false;
+              rust = false;
+              sql = false;
+              terraform = false;
+              ts = false;
+              xml = false;
+              yaml = true;
+              yuck = false;
+
               powershell_es = null;
             };
-            extra = { };
           };
       };
       # In this section, the main thing you will need to do is change the default package name

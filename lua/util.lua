@@ -1,5 +1,51 @@
 local M = {}
 
+---Merge tables using the specified behavior. Will concatenate integer-indexed
+---tables (lists), unlike vim.tbl_deep_extend.
+---@param behavior 'force'|'keep'|'error'
+---@param ... table<any, any>
+---@return table
+function M.merge(behavior, ...)
+  local ret = {}
+
+  local can_merge = function(v)
+    return type(v) == 'table'
+  end
+
+  for i = 1, select('#', ...) do
+    local tbl = select(i, ...) --[[@as table<any, any>]]
+    if tbl then
+      for k, v in pairs(tbl) do
+        if can_merge(v) and can_merge(ret[k]) then
+          ret[k] = M.merge(behavior, ret[k], v)
+        elseif behavior ~= 'force' and ret[k] ~= nil then
+          if behavior == 'error' then
+            error('key found in more than one map: ' .. k)
+          end -- else behavior is 'keep'
+        else
+          ret[k] = v
+        end
+      end
+    end
+  end
+
+  return ret
+end
+
+---Returns a function for lazy.nvim's `opts` key that merely merges options
+---together using `util.merge`.
+---@param behavior 'force'|'keep'|'error'
+---@param opts_a table<any, any>|fun(): table<any, any>
+---@return fun(whatever: any, opts_b: table<any, any>): table<any, any>
+function M.merge_opts(behavior, opts_a)
+  return function(_, opts_b)
+    if type(opts_a) == 'function' then
+      opts_a = opts_a()
+    end
+    return M.merge(behavior, opts_b, opts_a)
+  end
+end
+
 ---Run command and capture output.
 ---@param cmd string
 ---@return string|nil
@@ -61,7 +107,7 @@ function M.close_floating_windows()
   end
 end
 
-function thunk(f, outerArgs)
+local function thunk(f, outerArgs)
   return function(...)
     f(table.unpack(vim.fn.extendnew(outerArgs, arg)))
   end

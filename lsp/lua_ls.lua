@@ -1,4 +1,5 @@
 return {
+  enabled = nixCats 'lua',
   settings = {
     Lua = {
       completion = {

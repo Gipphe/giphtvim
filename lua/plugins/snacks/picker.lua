@@ -53,6 +53,13 @@ return {
       desc = 'Find command history',
     },
     {
+      '<leader>sa',
+      function()
+        require('snacks').picker.autocmds()
+      end,
+      desc = 'Autocmds',
+    },
+    {
       '<leader>gn',
       function()
         require('snacks').picker.notifications()
@@ -200,13 +207,6 @@ return {
       desc = 'Search history',
     },
     {
-      '<leader>sa',
-      function()
-        require('snacks').picker.autocmds()
-      end,
-      desc = 'Autocmds',
-    },
-    {
       '<leader>sb',
       function()
         require('snacks').picker.lines()
@@ -296,6 +296,13 @@ return {
         require('snacks').picker.man()
       end,
       desc = 'Man pages',
+    },
+    {
+      '<leader>sn',
+      function()
+        require('snacks').picker.notifications()
+      end,
+      desc = 'Notifications',
     },
     {
       '<leader>sp',

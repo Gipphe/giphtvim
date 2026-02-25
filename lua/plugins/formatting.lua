@@ -1,3 +1,5 @@
+local prettier = { 'prettierd', 'prettier', stop_after_first = true }
+
 return {
   'stevearc/conform.nvim',
   lazy = false,
@@ -19,9 +21,56 @@ return {
       desc = 'Format injected langs',
     },
   },
-  opts = function()
-    local prettier = { 'prettierd', 'prettier', stop_after_first = true }
-    return {
+  opts = function(opts)
+    opts = opts or {}
+    local category_formatters = {
+      markdown = {
+        ['markdown.mdx'] = prettier,
+        markdown = prettier,
+      },
+      fish = {
+        fish = { 'fish_indent' },
+      },
+      haskell = {
+        haskell = { 'fourmolu', stop_after_first = true },
+        cabal = { 'cabal_fmt' },
+      },
+      html = {
+        css = prettier,
+        html = prettier,
+      },
+      js = {
+        javascript = prettier,
+        javascriptreact = prettier,
+      },
+      ts = {
+        typescript = prettier,
+        typescriptreact = prettier,
+      },
+      json = {
+        json = prettier,
+        jsonc = prettier,
+      },
+      lua = {
+        lua = { 'stylua' },
+      },
+      nix = {
+        nix = { 'nixfmt' },
+      },
+      python = {
+        python = { 'ruff_format', 'ruff_organize_imports' },
+      },
+      bash = {
+        sh = { 'shfmt' },
+      },
+      terraform = {
+        terraform = { 'tofu_fmt' },
+      },
+      yaml = {
+        yaml = prettier,
+      },
+    }
+    local settings = {
       notify_on_error = true,
       notify_no_formatters = true,
       format_on_save = function(bufnr)
@@ -35,30 +84,6 @@ return {
         }
       end,
       formatters_by_ft = {
-        ['markdown.mdx'] = prettier,
-        cabal = { 'cabal_fmt' },
-        css = prettier,
-        fish = { 'fish_indent' },
-        graphql = prettier,
-        handlebars = prettier,
-        haskell = { 'fourmolu', stop_after_first = true },
-        html = prettier,
-        javascript = prettier,
-        javascriptreact = prettier,
-        json = prettier,
-        jsonc = prettier,
-        less = prettier,
-        lua = { 'stylua' },
-        markdown = prettier,
-        nix = { 'nixfmt' },
-        python = { 'ruff_format', 'ruff_organize_imports' },
-        scss = prettier,
-        sh = { 'shfmt' },
-        terraform = { 'tofu_fmt' },
-        typescript = prettier,
-        typescriptreact = prettier,
-        vue = prettier,
-        yaml = prettier,
         ['*'] = { 'codespell' },
         ['_'] = { 'trim_whitespace' },
       },
@@ -75,5 +100,13 @@ return {
         quiet = false,
       },
     }
+
+    for cat, formatters in pairs(category_formatters) do
+      if nixCats(cat) then
+        settings.formatters_by_ft = vim.tbl_deep_extend('force', {}, settings.formatters_by_ft, formatters)
+      end
+    end
+
+    return vim.tbl_deep_extend('force', {}, opts, settings)
   end,
 }

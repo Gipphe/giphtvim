@@ -1,7 +1,49 @@
 return {
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'lsp',
+
+    -- lspconfig {{{
+    -- Enable the following language servers
+    --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
+    --
+    --  Add any additional override configuration in the following tables. Available keys are:
+    --  - cmd (table): Override the default command used to start the server
+    --  - filetypes (table): Override the default list of associated filetypes for the server
+    --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
+    --  - settings (table): Override the default settings passed when initializing the server.
+    --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+    -- NOTE: nixCats: there is help in nixCats for lsps at `:h nixCats.LSPs` and also `:h nixCats.luaUtils`
+    --
+    -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
+    --
+    -- Some languages (like typescript) have entire language plugins that can be useful:
+    --    https://github.com/pmizio/typescript-tools.nvim
+    -- }}}
+    opts = {
+      category_servers = {
+        elm = 'elmls',
+        nix = { 'nil', require('nixCatsUtils').whenNixCatsElse('nixd', 'rnix') },
+        powershell = 'powershell_es',
+        bash = 'bashls',
+        json = 'jsonls',
+        html = 'html',
+        js = { 'eslint', 'tailwindcss' },
+        ts = { 'eslint', 'taildinwcss', 'ts_ls' },
+        fish = 'fish_lsp',
+        terraform = 'terraformls',
+        yaml = 'yamlls',
+        markdown = 'marksman',
+        python = 'ruff',
+        lua = 'lua_ls',
+        docker = 'dockerls',
+        qml = 'qmlls',
+        xml = 'lemminx',
+        go = 'gopls',
+        sql = 'sqls',
+        rust = 'rust_analyzer',
+      },
+    },
     dependencies = {
       {
         -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -33,68 +75,8 @@ return {
         opts = {},
       },
       'folke/lazydev.nvim',
-      'lukahartwig/pnpm.nvim',
       'saghen/blink.cmp',
     },
-    opts = function(opts)
-      opts = opts or {}
-
-      -- lspconfig {{{
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      -- NOTE: nixCats: there is help in nixCats for lsps at `:h nixCats.LSPs` and also `:h nixCats.luaUtils`
-      --
-      -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
-      --
-      -- Some languages (like typescript) have entire language plugins that can be useful:
-      --    https://github.com/pmizio/typescript-tools.nvim
-      -- }}}
-      local servers = {
-        -- 'basedpyright',
-        'bashls',
-        -- 'dockerls',
-        'jsonls',
-        'html',
-        -- 'qmlls',
-        -- 'lemminx',
-        'eslint',
-        -- 'gopls',
-        -- 'rust_analyzer',
-        'tailwindcss',
-        'fish_lsp',
-        'terraformls',
-        'yamlls',
-        -- 'sqls',
-        'ts_ls',
-        'marksman',
-        'ruff',
-        'lua_ls',
-        'nil_ls',
-      }
-
-      if require('nixCatsUtils').enableForCategory 'elm' then
-        table.insert(servers, 'elmls')
-      end
-
-      if require('nixCatsUtils').isNixCats then
-        -- NOTE: nixCats: nixd is not available on mason.
-        -- Feel free to check the nixd docs for more configuration options:
-        -- https://github.com/nix-community/nixd/blob/main/nixd/docs/configuration.md
-        table.insert(servers, 'nixd')
-        table.insert(servers, 'powershell_es')
-      else
-        table.insert(servers, 'rnix')
-      end
-
-      return vim.tbl_deep_extend('force', {}, opts, { servers = servers })
-    end,
 
     config = function(_, opts)
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -109,6 +91,7 @@ return {
 
           -- Open LSP info
           map('<leader>cl', '<cmd>LspInfo<cr>', 'Lsp info')
+          map('<leader>cL', '<cmd>LspLog<cr>', 'Lsp log')
 
           -- Jump to the definition of the word under your cursor.
           -- This is where a variable was first declared, or where a function is defined, etc.
@@ -186,30 +169,6 @@ return {
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-          -- TODO: Superseded by vim-illuminate
-          -- if client and client.server_capabilities.documentHighlightProvider then
-          --   local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-          --   vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-          --     buffer = event.buf,
-          --     group = highlight_augroup,
-          --     callback = vim.lsp.buf.document_highlight,
-          --   })
-          --
-          --   vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-          --     buffer = event.buf,
-          --     group = highlight_augroup,
-          --     callback = vim.lsp.buf.clear_references,
-          --   })
-          --
-          --   vim.api.nvim_create_autocmd('LspDetach', {
-          --     group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-          --     callback = function(event2)
-          --       vim.lsp.buf.clear_references()
-          --       vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-          --     end,
-          --   })
-          -- end
-
           -- The following autocommand is used to enable inlay hints in your
           -- code, if the language server you are using supports them
           --
@@ -252,18 +211,30 @@ return {
 
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       vim.lsp.config('*', { capabilities = capabilities })
-      local servers = opts.servers
+      ---@type string[]
+      local servers = opts.servers or {}
+
+      -- Append servers based on categories
+      for cat, srvs in pairs(opts.category_servers) do
+        if nixCats(cat) then
+          local srvs_list = srvs
+          if type(srvs) == 'function' then
+            srvs_list = srvs()
+          elseif type(srvs) ~= 'table' then
+            srvs_list = { srvs }
+          end
+          for _, srv in pairs(srvs_list) do
+            servers[#servers + 1] = srv
+          end
+        end
+      end
+      servers = vim.fn.uniq(vim.fn.sort(servers)) --[[@as string[] ]]
 
       -- NOTE: nixCats: if nix, use vim.lsp instead of mason
       -- You could MAKE it work, using lspsAndRuntimeDeps and sharedLibraries in nixCats
       -- but don't... its not worth it. Just add the lsp to lspsAndRuntimeDeps.
       if require('nixCatsUtils').isNixCats then
         vim.lsp.enable(servers)
-        -- for server_name, cfg in pairs(servers) do
-        --   -- vim.lsp.config(server_name, cfg)
-        --   -- vim.lsp.enable(server_name)
-        --   require('lspconfig')[server_name].setup(cfg)
-        -- end
       else
         -- NOTE: nixCats: and if no nix, do it the normal way
 
@@ -277,11 +248,7 @@ return {
 
         -- You can add other tools here that you want Mason to install
         -- for you, so that they are available from within Neovim.
-        local ensure_installed = servers
-        vim.fn.extendnew(ensure_installed, {
-          'stylua', -- Used to format Lua code
-        })
-        require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+        require('mason-tool-installer').setup { ensure_installed = servers }
 
         require('mason-lspconfig').setup {
           ensure_installed = {},
@@ -295,7 +262,7 @@ return {
   -- used for completion, annotations and signatures of Neovim apis
   {
     'folke/lazydev.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = nixCats 'lsp' and nixCats 'lua',
     dependencies = {
       {
         'saghen/blink.cmp',
@@ -328,7 +295,7 @@ return {
 
   {
     'mrcjkb/haskell-tools.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'haskell',
+    enabled = nixCats 'lsp' and nixCats 'haskell',
     version = '^6',
     lazy = false, -- This plugin is already lazy
     config = function()
@@ -359,19 +326,9 @@ return {
     ft = { 'haskell' },
   },
 
-  -- {
-  --   'kiyoon/haskell-scope-highlighting.nvim',
-  --   enabled = require('nixCatsUtils').enableForCategory 'haskell',
-  --   dependencies = { 'nvim-treesitter/nvim-treesitter' },
-  --   init = function()
-  --     vim.cmd [[autocmd FileType haskell syntax off]]
-  --     vim.cmd [[autocmd FileType haskell TSDisable highlight]]
-  --   end,
-  -- },
-
   {
     'jmbuhr/otter.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'lsp',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
     },
@@ -382,13 +339,30 @@ return {
 
   {
     'elkowar/yuck.vim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = nixCats 'yuck',
     ft = { 'yuck' },
   },
 
   {
     'lukahartwig/pnpm.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = nixCats 'js' or nixCats 'ts',
     ft = { 'js', 'ts', 'tsx', 'jsx' },
+  },
+
+  {
+    'fatih/vim-go',
+    enabled = nixCats 'go',
+    ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },
+    config = function()
+      vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufWinEnter', 'BufWritePre' }, {
+        group = vim.api.nvim_create_augroup('gotmpl_syntax', { clear = true }),
+        pattern = '*.gohtml,*.gotmpl,*.html',
+        callback = function(event)
+          if vim.fn.search('{{.\\+}}', 'nw') ~= 0 then
+            vim.api.nvim_set_option_value('filetype', 'gohtmltmpl', { buf = event.buf })
+          end
+        end,
+      })
+    end,
   },
 }

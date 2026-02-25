@@ -189,7 +189,7 @@ return {
 
   {
     'folke/todo-comments.nvim',
-    enabled = nixCats 'full',
+    enabled = nixCats 'rich_ui',
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
     ---@type TodoOptions

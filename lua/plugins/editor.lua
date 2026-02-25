@@ -1,7 +1,7 @@
 return {
   {
     'nvim-pack/nvim-spectre',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'folke/trouble.nvim',
@@ -22,7 +22,7 @@ return {
 
   {
     'folke/flash.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     event = 'VeryLazy',
     ---@type Flash.Config
     opts = {},
@@ -71,7 +71,7 @@ return {
 
   {
     'linux-cultist/venv-selector.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     dependencies = {
       'neovim/nvim-lspconfig',
       'folke/snacks.nvim',
@@ -90,7 +90,7 @@ return {
 
   {
     'aca/marp.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     main = 'marp.nvim',
     version = false,
     dependencies = {
@@ -208,7 +208,7 @@ return {
 
   {
     'folke/trouble.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -267,7 +267,7 @@ return {
 
   {
     'RRethy/vim-illuminate',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     event = 'BufReadPre',
     opts = {
       delay = 200,
@@ -402,7 +402,7 @@ return {
 
   {
     'rachartier/tiny-inline-diagnostic.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'full',
+    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
     event = 'VeryLazy',
     priority = 1000,
     config = function()
@@ -429,22 +429,5 @@ return {
     opts = {
       disable_filetype = { 'TelescopePrompt', 'vim' },
     },
-  },
-
-  {
-    'fatih/vim-go',
-    enabled = require('nixCatsUtils').enableForCategory 'go',
-    ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },
-    config = function()
-      vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufWinEnter', 'BufWritePre' }, {
-        group = vim.api.nvim_create_augroup('gotmpl_syntax', { clear = true }),
-        pattern = '*.gohtml,*.gotmpl,*.html',
-        callback = function(event)
-          if vim.fn.search('{{.\\+}}', 'nw') ~= 0 then
-            vim.api.nvim_set_option_value('filetype', 'gohtmltmpl', { buf = event.buf })
-          end
-        end,
-      })
-    end,
   },
 }
