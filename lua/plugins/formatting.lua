@@ -68,6 +68,9 @@ return {
             ignore_errors = true,
           },
         },
+        codespell = {
+          append_args = { '-L', 'receivedFrom' },
+        },
       },
       format = {
         timeout_ms = 3000,
