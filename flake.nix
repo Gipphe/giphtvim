@@ -215,7 +215,6 @@
                 mini-bufremove
                 mini-comment
                 mini-indentscope
-                mini-pairs
                 mini-statusline
                 mini-surround
                 nvim-autopairs
