@@ -1,5 +1,3 @@
-local options_from_nix = nixCats.extra 'nixd.options' or {}
-
 return {
   enabled = nixCats 'nix',
   settings = {
@@ -9,6 +7,6 @@ return {
     formatting = {
       command = { 'nixfmt' },
     },
-    options = options_from_nix,
+    options = nixCats.extra 'nixd.options' or {},
   },
 }
