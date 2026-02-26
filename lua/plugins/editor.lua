@@ -1,7 +1,8 @@
+local keys = require 'keygroups'
 return {
   {
     'nvim-pack/nvim-spectre',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'folke/trouble.nvim',
@@ -11,7 +12,7 @@ return {
     opts = {},
     keys = {
       {
-        '<leader>sr',
+        keys.key.search 'r',
         function()
           require('spectre').open()
         end,
@@ -22,7 +23,7 @@ return {
 
   {
     'folke/flash.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     event = 'VeryLazy',
     ---@type Flash.Config
     opts = {},
@@ -71,46 +72,46 @@ return {
 
   {
     'linux-cultist/venv-selector.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     dependencies = {
       'neovim/nvim-lspconfig',
       'folke/snacks.nvim',
     },
     ft = 'python',
     ---@module 'venv-selector'
-    ---@type venv-selector.Config
+    ---@type venv-selector.Options
     opts = {
       search = {},
       options = {},
     },
     keys = {
-      { '<leader>cv', '<cmd>VenvSelect<cr>', desc = 'Select VirtualEnv' },
+      { keys.key.code 'v', '<cmd>VenvSelect<cr>', desc = 'Select VirtualEnv' },
     },
   },
 
   {
     'aca/marp.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     main = 'marp.nvim',
     version = false,
     dependencies = {
       {
         'folke/which-key.nvim',
-        opts = {
-          { '<leader>m', group = 'Marp' },
+        opts = require('util').concat_opts {
+          { '<leader>m', group = '+marp' },
         },
       },
     },
     keys = {
       {
-        '<leader>mpo',
+        '<leader>mo',
         function()
           require('marp.nvim').ServerStart()
         end,
         desc = 'Start Marp server',
       },
       {
-        '<leader>mpc',
+        '<leader>mc',
         function()
           require('marp.nvim').ServerStop()
         end,
@@ -157,10 +158,10 @@ return {
       },
     },
     keys = {
-      { '<leader>fe', '<cmd>Oil<cr>', desc = 'Open Oil (parent dir)' },
-      { '<leader>fE', '<cmd>Oil .<cr>', desc = 'Open Oil (cwd)' },
-      { '<leader>e', '<leader>fe', desc = 'Open Oil (parent dir)', remap = true },
-      { '<leader>E', '<leader>fE', desc = 'Open Oil (cwd)', remap = true },
+      { keys.key.find 'e', '<cmd>Oil<cr>', desc = 'Open Oil (parent dir)' },
+      { keys.key.find 'E', '<cmd>Oil .<cr>', desc = 'Open Oil (cwd)' },
+      { '<leader>e', keys.key.find 'e', desc = 'Open Oil (parent dir)', remap = true },
+      { '<leader>E', keys.key.find 'E', desc = 'Open Oil (cwd)', remap = true },
     },
   },
 
@@ -170,28 +171,28 @@ return {
     opts = {},
     keys = {
       {
-        '<leader>qs',
+        keys.key.session 's',
         function()
           require('persistence').load()
         end,
         desc = 'Restore session',
       },
       {
-        '<leader>ql',
+        keys.key.session 'l',
         function()
           require('persistence').load { last = true }
         end,
         desc = 'Restore last session',
       },
       {
-        '<leader>qd',
+        keys.key.session 'd',
         function()
           require('persistence').stop()
         end,
         desc = 'Do not save current session',
       },
       {
-        '<leader>qp',
+        keys.key.session 'p',
         function()
           require('persistence').select()
         end,
@@ -208,66 +209,67 @@ return {
 
   {
     'folke/trouble.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
     cmd = 'Trouble',
     opts = {},
     keys = {
-      { '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics (Trouble)' },
-      { '<leader>xX', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics (Trouble)' },
-      { '<leader>cs', '<cmd>Trouble symbols toggle focus=false<cr>', desc = 'Symbols (Trouble)' },
-      { '<leader>cl', '<cmd>Trouble lsp toggle focus=false win.position=right<cr>', desc = 'LSP Definitions / references / ... (Trouble)' },
-      { '<leader>xL', '<cmd>Trouble loclist toggle<cr>', desc = 'Location List (Trouble)' },
-      { '<leader>xQ', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix List (Trouble)' },
+      { keys.key.diagnostic 'x', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics (Trouble)' },
+      { keys.key.diagnostic 'X', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics (Trouble)' },
+      { keys.key.diagnostic 'L', '<cmd>Trouble loclist toggle<cr>', desc = 'Location List (Trouble)' },
+      { keys.key.diagnostic 'Q', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix List (Trouble)' },
+      { keys.key.code 's', '<cmd>Trouble symbols toggle focus=false<cr>', desc = 'Symbols (Trouble)' },
+      { keys.key.code 'x', '<cmd>Trouble lsp toggle focus=false win.position=right<cr>', desc = 'LSP Definitions / references / ... (Trouble)' },
 
-      -- TODO: Figure out whether any of these are worth keeping.
       -- { '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>', desc = 'Document Diagnostics (Trouble)' },
       -- { '<leader>xX', '<cmd>TroubleToggle workspace_diagnostics<cr>', desc = 'Workspace Diagnostics (Trouble)' },
       -- { '<leader>xL', '<cmd>TroubleToggle loclist<cr>', desc = 'Location List (Trouble)' },
       -- { '<leader>xQ', '<cmd>TroubleToggle quickfix<cr>', desc = 'Quickfix List (Trouble)' },
-      -- {
-      --   '[q',
-      --   function()
-      --     if require('trouble').is_open() then
-      --       require('trouble').previous { skip_groups = true, jump = true }
-      --     else
-      --       local ok, err = pcall(vim.cmd.cprev)
-      --       if not ok then
-      --         vim.notify(err, vim.log.levels.ERROR)
-      --       end
-      --     end
-      --   end,
-      --   desc = 'Previous Trouble/Quickfix Item',
-      -- },
-      -- {
-      --   ']q',
-      --   function()
-      --     if require('trouble').is_open() then
-      --       require('trouble').next { skip_groups = true, jump = true }
-      --     else
-      --       local ok, err = pcall(vim.cmd.cnext)
-      --       if not ok then
-      --         vim.notify(err, vim.log.levels.ERROR)
-      --       end
-      --     end
-      --   end,
-      --   desc = 'Next Trouble/Quickfix Item',
-      -- },
+
+      {
+        keys.key.prev 'q',
+        function()
+          if require('trouble').is_open() then
+            require('trouble').previous { skip_groups = true, jump = true }
+          else
+            local ok, err = pcall(vim.cmd.cprev)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = 'Previous Trouble/Quickfix Item',
+      },
+      {
+        keys.key.next 'q',
+        function()
+          if require('trouble').is_open() then
+            ---@diagnostic disable-next-line: missing-parameter
+            require('trouble').next { skip_groups = true, jump = true }
+          else
+            local ok, err = pcall(vim.cmd.cnext)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = 'Next Trouble/Quickfix Item',
+      },
     },
   },
 
   {
     'mbbill/undotree',
     keys = {
-      { '<leader>cu', '<cmd>UndotreeToggle<cr><cmd>UndotreeFocus<cr>', desc = 'Toggle Undotree' },
+      { keys.key.inspect 'u', '<cmd>UndotreeToggle<cr><cmd>UndotreeFocus<cr>', desc = 'Toggle Undotree' },
     },
   },
 
   {
     'RRethy/vim-illuminate',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     event = 'BufReadPre',
     opts = {
       delay = 200,
@@ -282,14 +284,14 @@ return {
     end,
     keys = {
       {
-        ']]',
+        keys.key.next ']',
         function()
           require('illuminate').goto_next_reference(false)
         end,
         desc = 'Go to next reference',
       },
       {
-        '[[',
+        keys.key.prev '[',
         function()
           require('illuminate').goto_prev_reference(false)
         end,
@@ -307,12 +309,6 @@ return {
 
   {
     'lewis6991/gitsigns.nvim',
-    dependencies = {
-      'folke/which-key.nvim',
-      opts = {
-        { '<leader>h', group = '+git', mode = { 'n', 'v' } },
-      },
-    },
     opts = {
       signs = {
         add = { text = '+' },
@@ -338,61 +334,65 @@ return {
         end
 
         -- Navigation
-        lmap('n', ']c', function()
+        lmap('n', keys.key.next 'c', function()
           if vim.wo.diff then
-            vim.cmd.normal { ']c', bang = true }
+            vim.cmd.normal { keys.key.next 'c', bang = true }
           else
             ---@diagnostic disable-next-line: param-type-mismatch
             gitsigns.nav_hunk 'next'
           end
         end, 'Go to next hunk')
 
-        lmap('n', '[c', function()
+        lmap('n', keys.key.prev 'c', function()
           if vim.wo.diff then
-            vim.cmd.normal { '[c', bang = true }
+            vim.cmd.normal { keys.key.prev 'c', bang = true }
           else
             ---@diagnostic disable-next-line: param-type-mismatch
             gitsigns.nav_hunk 'prev'
           end
         end, 'Go to previous hunk')
 
-        -- Actions
-        lmap('n', '<leader>hs', gitsigns.stage_hunk, 'Stage hunk')
-        lmap('n', '<leader>hr', gitsigns.reset_hunk, 'Reset hunk')
+        local gmap = function(mode, l, r, desc)
+          vim.keymap.set(mode, keys.key.git(l), r, { buffer = bufnr, desc = desc })
+        end
 
-        lmap('v', '<leader>hs', function()
+        -- Actions
+        gmap('n', 's', gitsigns.stage_hunk, 'Stage hunk')
+        gmap('n', 'r', gitsigns.reset_hunk, 'Reset hunk')
+
+        gmap('v', 's', function()
           gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
         end, 'Stage selected lines')
 
-        lmap('v', '<leader>hr', function()
+        gmap('v', 'r', function()
           gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
         end, 'Reset selected lines')
 
-        lmap('n', '<leader>hS', gitsigns.stage_buffer, 'Stage buffer')
-        lmap('n', '<leader>hR', gitsigns.reset_buffer, 'Reset buffer')
-        lmap('n', '<leader>hp', gitsigns.preview_hunk, 'Preview hunk')
-        lmap('n', '<leader>hi', gitsigns.preview_hunk_inline, 'Preview hunk inline')
+        gmap('n', 'S', gitsigns.stage_buffer, 'Stage buffer')
+        gmap('n', 'R', gitsigns.reset_buffer, 'Reset buffer')
+        gmap('n', 'p', gitsigns.preview_hunk, 'Preview hunk')
+        gmap('n', 'i', gitsigns.preview_hunk_inline, 'Preview hunk inline')
 
-        lmap('n', '<leader>hb', function()
+        gmap('n', 'b', function()
           gitsigns.blame_line { full = true }
         end, 'Blame current line')
 
-        lmap('n', '<leader>hd', gitsigns.diffthis, 'Vimdiff file')
+        gmap('n', 'd', gitsigns.diffthis, 'Vimdiff file')
 
-        lmap('n', '<leader>hD', function()
+        gmap('n', 'D', function()
           ---@diagnostic disable-next-line: param-type-mismatch
           gitsigns.diffthis '~'
         end, 'Vimdiff file against previous commit')
 
-        lmap('n', '<leader>hQ', function()
+        gmap('n', 'Q', function()
           ---@diagnostic disable-next-line: param-type-mismatch
           gitsigns.setqflist 'all'
         end, 'Open QuickFix list with all hunks in all files')
-        lmap('n', '<leader>hq', gitsigns.setqflist, 'Open QuickFix list with all hunks in current buffer')
+        gmap('n', 'q', gitsigns.setqflist, 'Open QuickFix list with all hunks in current buffer')
 
         -- Toggles
-        lmap('n', '<leader>hlb', gitsigns.toggle_current_line_blame, 'Toggle current line blame virtual text')
-        lmap('n', '<leader>hiw', gitsigns.toggle_word_diff, 'Highlight word diffs inline')
+        gmap('n', 'lb', gitsigns.toggle_current_line_blame, 'Toggle current line blame virtual text')
+        gmap('n', 'iw', gitsigns.toggle_word_diff, 'Highlight word diffs inline')
 
         -- Text object
         lmap({ 'o', 'x' }, 'ih', gitsigns.select_hunk, 'Select hunk under cursor')
@@ -402,7 +402,7 @@ return {
 
   {
     'rachartier/tiny-inline-diagnostic.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'rich_editor',
+    enabled = nixCats 'rich_editor',
     event = 'VeryLazy',
     priority = 1000,
     config = function()

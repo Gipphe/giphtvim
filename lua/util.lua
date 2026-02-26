@@ -8,16 +8,21 @@ local M = {}
 function M.merge(behavior, ...)
   local ret = {}
 
-  local can_merge = function(v)
-    return type(v) == 'table'
+  local is_dict = function(v)
+    return type(v) == 'table' and not vim.islist(v)
+  end
+  local is_list = function(v)
+    return type(v) == 'table' and vim.islist(v)
   end
 
   for i = 1, select('#', ...) do
     local tbl = select(i, ...) --[[@as table<any, any>]]
     if tbl then
       for k, v in pairs(tbl) do
-        if can_merge(v) and can_merge(ret[k]) then
+        if is_dict(v) and is_dict(ret[k]) then
           ret[k] = M.merge(behavior, ret[k], v)
+        elseif is_list(v) and is_list(ret[k]) then
+          ret[k] = vim.list_extend(vim.list_extend({}, ret[k]), v)
         elseif behavior ~= 'force' and ret[k] ~= nil then
           if behavior == 'error' then
             error('key found in more than one map: ' .. k)
@@ -44,6 +49,38 @@ function M.merge_opts(behavior, opts_a)
     end
     return M.merge(behavior, opts_b, opts_a)
   end
+end
+
+---Returns a function for lazy.nvim's `opts` key that merely concatenates
+---options together, assuming they are list-like tables.
+---@param opts_a any[]|fun(): any[]
+---@return fun(whatever: any, opts_b: any[]): any[]
+function M.concat_opts(opts_a)
+  return function(_, opts_b)
+    if type(opts_a) == 'function' then
+      opts_a = opts_a()
+    end
+    if type(opts_a) ~= 'table' or not vim.islist(opts_a) then
+      error 'concat_opts was not passed a list-like table for opts_a'
+    end
+    if type(opts_b) ~= 'table' or not vim.islist(opts_b) then
+      error 'concat_opts was not passed a list-like table for opts_b'
+    end
+    return vim.list_extend(vim.list_extend({}, opts_b), opts_a)
+  end
+end
+
+---Concatenate lists together. Returns a new list.
+---@param ... any[][]
+---@return any[]
+function M.flatten(...)
+  local ret = {}
+  local args = { ... }
+  for i = 1, select('#', ...) do
+    local l = select(i, ...)
+    vim.list_extend(ret, l)
+  end
+  return ret
 end
 
 ---Run command and capture output.
@@ -105,16 +142,6 @@ function M.close_floating_windows()
   for _, w in ipairs(inactive_floating_wins) do
     pcall(vim.api.nvim_win_close, w, false)
   end
-end
-
-local function thunk(f, outerArgs)
-  return function(...)
-    f(table.unpack(vim.fn.extendnew(outerArgs, arg)))
-  end
-end
-
-function M.thunk(f, ...)
-  return thunk(f, arg)
 end
 
 M.icons = {

@@ -1,4 +1,6 @@
-local icons = require('util').icons
+local util = require 'util'
+local keys = require 'keygroups'
+local icons = util.icons
 
 return {
   {
@@ -27,17 +29,22 @@ return {
       },
     },
     event = 'VeryLazy',
-    keys = {
-      { '<leader>bp', '<Cmd>BufferLineTogglePin<CR>', desc = 'Toggle Pin' },
-      { '<leader>bP', '<Cmd>BufferLineGroupClose ungrouped<CR>', desc = 'Delete Non-Pinned Buffers' },
-      { '<leader>bo', '<Cmd>BufferLineCloseOthers<CR>', desc = 'Delete Other Buffers' },
-      { '<leader>br', '<Cmd>BufferLineCloseRight<CR>', desc = 'Delete Buffers to the Right' },
-      { '<leader>bl', '<Cmd>BufferLineCloseLeft<CR>', desc = 'Delete Buffers to the Left' },
-      { '<S-h>', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev Buffer' },
-      { '<S-l>', '<cmd>BufferLineCycleNext<cr>', desc = 'Next Buffer' },
-      { '[b', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev Buffer' },
-      { ']b', '<cmd>BufferLineCycleNext<cr>', desc = 'Next Buffer' },
-    },
+    keys = function(_, old_keys)
+      old_keys = old_keys or {}
+      local k = function(l, r, desc)
+        return { keys.key.buffer(l), r, desc = desc }
+      end
+      local new_keys = {
+        k('p', '<Cmd>BufferLineTogglePin<CR>', 'Toggle pin'),
+        k('P', '<Cmd>BufferLineGroupClose ungrouped<CR>', 'Delete non-pinned buffers'),
+        k('o', '<Cmd>BufferLineCloseOthers<CR>', 'Delete other buffers'),
+        k('r', '<Cmd>BufferLineCloseRight<CR>', 'Delete buffers to the right'),
+        k('l', '<Cmd>BufferLineCloseLeft<CR>', 'Delete buffers to the left'),
+        { '<S-h>', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev buffer' },
+        { '<S-l>', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
+      }
+      return util.flatten(old_keys, new_keys)
+    end,
   },
 
   {
@@ -102,46 +109,13 @@ return {
     },
   },
 
-  { -- Useful plugin to show you pending keybinds.
+  {
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    ---@type wk.Spec
-    opts = {
-      -- TODO: Should these groups be separated so that I can easily reference them in actual keybinding definitions?
-      { 'g', group = '+goto', mode = { 'n', 'v' } },
-      { 'gs', group = '+surround', mode = { 'n', 'v' } },
-      { 'z', group = '+fold', mode = { 'n', 'v' } },
-      { ']', group = '+next', mode = { 'n', 'v' } },
-      { '[', group = '+prev', mode = { 'n', 'v' } },
-      { '<leader><tab>', group = '+tabs', mode = { 'n', 'v' } },
-
-      { '<leader>b', group = '+buffer', mode = { 'n', 'v' } },
-      { '<leader>c', group = '+code', mode = { 'n', 'v' } },
-      { '<leader>f', group = '+file/find', mode = { 'n', 'v' } },
-      { '<leader>q', group = '+quit/session', mode = { 'n', 'v' } },
-      { '<leader>s', group = '+search', mode = { 'n', 'v' } },
-      { '<leader>u', group = '+ui', mode = { 'n', 'v' } },
-      { '<leader>w', group = '+windows', mode = { 'n', 'v' } },
-      { '<leader>x', group = '+diagnostics/quickfix', mode = { 'n', 'v' } },
-      { '<leader>t', group = '+telescope', mode = { 'n', 'v' } },
-      -- TODO: Are any of these relevant now?
-      -- { '<leader>c', group = 'Code' },
-      -- { '<leader>c_', hidden = true },
-      -- { '<leader>d', group = 'Document' },
-      -- { '<leader>d_', hidden = true },
-      -- { '<leader>r', group = 'Rename' },
-      -- { '<leader>r_', hidden = true },
-      -- { '<leader>s', group = 'Search' },
-      -- { '<leader>s_', hidden = true },
-      -- { '<leader>t', group = 'Toggle' },
-      -- { '<leader>t_', hidden = true },
-      -- { '<leader>w', group = 'Workspace' },
-      -- { '<leader>w_', hidden = true },
-    },
-    config = function(_, spec) -- This is the function that runs, AFTER loading
+    event = 'VimEnter',
+    ---@type fun(_: any, opts: wk.Spec): wk.Spec
+    opts = util.concat_opts(require('keygroups').which_key),
+    config = function(_, spec)
       require('which-key').setup()
-
-      -- Document existing key chains
       require('which-key').add(spec)
     end,
   },
@@ -196,45 +170,51 @@ return {
     opts = {
       signs = false,
     },
-    keys = {
-      {
-        ']t',
-        function()
-          require('todo-comments').jump_next()
-        end,
-        desc = 'Next todo comment',
-      },
-      {
-        '[t',
-        function()
-          require('todo-comments').jump_prev()
-        end,
-        desc = 'Previous todo comment',
-      },
-      {
-        '<leader>xt',
-        '<cmd>TodoTrouble<cr>',
-        desc = 'Todo (Trouble)',
-      },
-      {
-        '<leader>xT',
-        '<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>',
-        desc = 'Todo/Fix/Fixme (Trouble)',
-      },
-      {
-        '<leader>st',
-        function()
-          require('snacks').picker.todo_comments()
-        end,
-        desc = 'Todo',
-      },
-      {
-        '<leader>sT',
-        function()
-          require('snacks').picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } }
-        end,
-        desc = 'Todo/Fix/Fixme',
-      },
-    },
+    keys = util.concat_opts(function()
+      local k = keys.key
+
+      return {
+        {
+          k.next 't',
+          function()
+            require('todo-comments').jump_next()
+          end,
+          desc = 'Next todo comment',
+        },
+        {
+          k.prev 't',
+          function()
+            require('todo-comments').jump_prev()
+          end,
+          desc = 'Previous todo comment',
+        },
+        {
+          k.diagnostic 't',
+          '<cmd>TodoTrouble<cr>',
+          desc = 'Todo (Trouble)',
+        },
+        {
+          k.diagnostic 'T',
+          '<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>',
+          desc = 'Todo/Fix/Fixme (Trouble)',
+        },
+        {
+          k.diagnostic 'c',
+          function()
+            ---@diagnostic disable-next-line: undefined-field
+            require('snacks').picker.todo_comments()
+          end,
+          desc = 'Todo',
+        },
+        {
+          k.diagnostic 'C',
+          function()
+            ---@diagnostic disable-next-line: undefined-field
+            require('snacks').picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } }
+          end,
+          desc = 'Todo/Fix/Fixme',
+        },
+      }
+    end),
   },
 }

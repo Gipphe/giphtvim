@@ -1,3 +1,4 @@
+local keys = require 'keygroups'
 local prettier = { 'prettierd', 'prettier', stop_after_first = true }
 
 return {
@@ -5,7 +6,7 @@ return {
   lazy = false,
   keys = {
     {
-      '<leader>cf',
+      keys.key.code 'f',
       function()
         require('conform').format { async = true, lsp_fallback = true }
       end,
@@ -13,7 +14,7 @@ return {
       desc = 'Format buffer',
     },
     {
-      '<leader>cF',
+      keys.key.code 'F',
       function()
         require('conform').format { formatters = { 'injected' }, timeout_ms = 3000 }
       end,

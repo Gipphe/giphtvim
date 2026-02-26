@@ -17,7 +17,7 @@ vim.g.markdown_recommended_style = 0
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.opt.number = not require('nixCatsUtils').enableForCategory 'narrow_screen'
+vim.opt.number = not nixCats 'narrow_screen'
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true
@@ -42,7 +42,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = require('nixCatsUtils').enableForCategory 'narrow_screen' and 'no' or 'yes'
+vim.opt.signcolumn = nixCats 'narrow_screen' and 'no' or 'yes'
 
 -- Decrease update time
 vim.opt.updatetime = 250
@@ -83,7 +83,7 @@ vim.opt.confirm = true
 -- Enable break indent
 vim.opt.breakindent = true
 -- Word-wrap
-vim.opt.wrap = not require('nixCatsUtils').enableForCategory 'narrow_screen'
+vim.opt.wrap = not nixCats 'narrow_screen'
 vim.opt.linebreak = true
 
 vim.opt.title = true

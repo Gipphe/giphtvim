@@ -1,7 +1,8 @@
+local keys = require 'keygroups'
 return {
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    enabled = require('nixCatsUtils').enableForCategory 'lsp',
+    enabled = nixCats 'lsp',
 
     -- lspconfig {{{
     -- Enable the following language servers
@@ -79,40 +80,49 @@ return {
     },
 
     config = function(_, opts)
+      -- Remove default keybindings for LSP
+      vim.keymap.del('n', 'grn')
+      vim.keymap.del('n', 'gra')
+      vim.keymap.del('n', 'grr')
+      vim.keymap.del('n', 'gri')
+      vim.keymap.del('n', 'grt')
+      vim.keymap.del('n', 'gO')
+      vim.keymap.del('i', '<C-S>')
+
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          ---@param keys string
+          ---@param l string
           ---@param func string|function
           ---@param desc string
-          local map = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = desc })
+          local map = function(l, func, desc)
+            vim.keymap.set('n', l, func, { buffer = event.buf, desc = desc })
           end
 
           -- Open LSP info
-          map('<leader>cl', '<cmd>LspInfo<cr>', 'Lsp info')
-          map('<leader>cL', '<cmd>LspLog<cr>', 'Lsp log')
+          map(keys.key.code 'l', '<cmd>LspInfo<cr>', 'Lsp info')
+          map(keys.key.code 'L', '<cmd>LspLog<cr>', 'Lsp log')
 
           -- Jump to the definition of the word under your cursor.
           -- This is where a variable was first declared, or where a function is defined, etc.
           -- To jump back, press <C-t>.
-          map('gd', function()
+          map(keys.key.goto 'd', function()
             require('snacks').picker.lsp_definitions { reuse_win = true }
           end, 'Goto definition')
 
-          map('gr', function()
+          map(keys.key.goto 'r', function()
             require('snacks').picker.lsp_references()
           end, 'Goto references')
 
-          map('gD', function()
+          map(keys.key.goto 'D', function()
             vim.lsp.buf.declaration()
           end, 'Goto declaration')
 
-          map('gI', function()
+          map(keys.key.goto 'I', function()
             require('snacks').picker.lsp_implementations { reuse_win = true }
           end, 'Goto implementation')
 
-          map('gy', function()
+          map(keys.key.goto 'y', function()
             require('snacks').picker.lsp_type_definitions { reuse_win = true }
           end, 'Goto type definition')
 
@@ -122,7 +132,7 @@ return {
             vim.lsp.buf.hover { border = 'rounded' }
           end, 'Hover documentation')
 
-          map('gK', function()
+          map(keys.key.goto 'K', function()
             vim.lsp.buf.signature_help { border = 'rounded' }
           end, 'Signature help')
 
@@ -130,13 +140,13 @@ return {
             vim.lsp.buf.signature_help { border = 'rounded' }
           end, { desc = 'Signature help', buffer = event.buf })
 
-          vim.keymap.set({ 'n', 'v' }, '<leader>ca', function()
+          vim.keymap.set({ 'n', 'v' }, keys.key.code 'a', function()
             vim.lsp.buf.code_action { border = 'rounded' }
           end, { desc = 'Code action', buffer = event.buf })
 
-          vim.keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run codelens', buffer = event.buf })
-          vim.keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & display codelens', buffer = event.buf })
-          vim.keymap.set('n', '<leader>cA', function()
+          vim.keymap.set({ 'n', 'v' }, keys.key.code 'c', vim.lsp.codelens.run, { desc = 'Run codelens', buffer = event.buf })
+          vim.keymap.set('n', keys.key.code 'C', vim.lsp.codelens.refresh, { desc = 'Refresh & display codelens', buffer = event.buf })
+          vim.keymap.set('n', keys.key.code 'A', function()
             vim.lsp.buf.code_action {
               context = {
                 only = { 'source' },
@@ -146,7 +156,7 @@ return {
             }
           end, { desc = 'Source action', buffer = event.buf })
 
-          vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename', buffer = event.buf })
+          vim.keymap.set('n', keys.key.code 'r', vim.lsp.buf.rename, { desc = 'Rename', buffer = event.buf })
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
@@ -158,7 +168,7 @@ return {
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
-          map('gD', function()
+          map(keys.key.goto 'D', function()
             vim.lsp.buf.declaration { border = 'rounded' }
           end, 'Goto declaration')
 
@@ -174,7 +184,7 @@ return {
           --
           -- This may be unwanted, since they displace some of your code
           if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>cth', function()
+            map(keys.key.code 'th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
             end, 'Toggle inlay hints')
           end
@@ -312,14 +322,17 @@ return {
               desc = desc,
             })
           end
-          lmap('n', '<leader>cl', vim.lsp.codelens.run, 'Run codelens')
-          lmap('n', '<leader>chs', ht.hoogle.hoogle_signature, 'Hoogle search type signature under cursor')
-          lmap('n', '<leader>cea', ht.lsp.buf_eval_all, 'Evaluate all code snippets')
-          lmap('n', '<leader>cpr', ht.repl.toggle, 'Toggle GHCi repl for the current package')
-          lmap('n', '<leader>cpR', function()
+          local cmap = function(mode, l, r, desc)
+            lmap(mode, keys.key.code(l), r, desc)
+          end
+          cmap('n', 'l', vim.lsp.codelens.run, 'Run codelens')
+          cmap('n', 'hs', ht.hoogle.hoogle_signature, 'Hoogle search type signature under cursor')
+          cmap('n', 'ea', ht.lsp.buf_eval_all, 'Evaluate all code snippets')
+          cmap('n', 'pr', ht.repl.toggle, 'Toggle GHCi repl for the current package')
+          cmap('n', 'pR', function()
             ht.repl.toggle(vim.api.nvim_buf_get_name(0))
           end, 'Toggle GHCi repl for current buffer')
-          lmap('n', '<leader>cpq', ht.repl.quit, 'Close GHCi repl')
+          cmap('n', 'pq', ht.repl.quit, 'Close GHCi repl')
         end,
       })
     end,
@@ -328,7 +341,7 @@ return {
 
   {
     'jmbuhr/otter.nvim',
-    enabled = require('nixCatsUtils').enableForCategory 'lsp',
+    enabled = nixCats 'lsp',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
     },

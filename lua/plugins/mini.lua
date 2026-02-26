@@ -1,5 +1,4 @@
--- Collection of various small independent plugins/modules
-
+local keys = require 'keygroups'
 local mini_augroup = vim.api.nvim_create_augroup('mini', { clear = true })
 
 return {
@@ -17,13 +16,13 @@ return {
     event = 'BufReadPost',
     opts = {
       mappings = {
-        add = 'gsa',
-        delete = 'gsd',
-        find = 'gsf',
-        find_left = 'gsF',
-        highlight = 'gsh',
-        replace = 'gsr',
-        update_n_lines = 'gsn',
+        add = keys.key.surround 'a',
+        delete = keys.key.surround 'd',
+        find = keys.key.surround 'f',
+        find_left = keys.key.surround 'F',
+        highlight = keys.key.surround 'h',
+        replace = keys.key.surround 'r',
+        update_n_lines = keys.key.surround 'n',
       },
     },
   },
@@ -37,7 +36,7 @@ return {
     end,
     keys = {
       {
-        '<leader>up',
+        keys.key.ui 'p',
         function()
           vim.g.minipairs_disable = not vim.g.minipairs_disable
           if vim.g.minipairs_disable then
@@ -72,7 +71,7 @@ return {
     opts = {},
     keys = {
       {
-        '<leader>bd',
+        keys.key.buffer 'd',
         function()
           local bd = require('mini.bufremove').delete
           if vim.bo.modified then
@@ -90,7 +89,7 @@ return {
         desc = 'Delete buffer',
       },
       {
-        '<leader>bD',
+        keys.key.buffer 'D',
         function()
           require('mini.bufremove').delete(0, true)
         end,

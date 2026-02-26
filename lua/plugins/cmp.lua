@@ -49,7 +49,7 @@ return {
 
         list = {
           selection = {
-            preselect = function(ctx)
+            preselect = function(_)
               return not require('blink.cmp').snippet_active { direction = 1 }
             end,
           },

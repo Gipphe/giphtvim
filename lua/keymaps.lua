@@ -3,15 +3,7 @@
 
 local map = vim.keymap.set
 local util = require 'util'
-
--- Remove default keybindings for LSP
-vim.keymap.del('n', 'grn')
-vim.keymap.del('n', 'gra')
-vim.keymap.del('n', 'grr')
-vim.keymap.del('n', 'gri')
-vim.keymap.del('n', 'grt')
-vim.keymap.del('n', 'gO')
-vim.keymap.del('i', '<C-S>')
+local keys = require 'keygroups'
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -24,27 +16,27 @@ map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-map('t', '<C-h>', '<cmd>wincmd h<cr>', { desc = 'Go to Left Window' })
-map('t', '<C-j>', '<cmd>wincmd j<cr>', { desc = 'Go to Lower Window' })
-map('t', '<C-k>', '<cmd>wincmd k<cr>', { desc = 'Go to Upper Window' })
-map('t', '<C-l>', '<cmd>wincmd l<cr>', { desc = 'Go to Right Window' })
-map('t', '<C-/>', '<cmd>close<cr>', { desc = 'Hide Terminal' })
+map('t', '<C-h>', '<cmd>wincmd h<cr>', { desc = 'Go to left window' })
+map('t', '<C-j>', '<cmd>wincmd j<cr>', { desc = 'Go to lower window' })
+map('t', '<C-k>', '<cmd>wincmd k<cr>', { desc = 'Go to upper window' })
+map('t', '<C-l>', '<cmd>wincmd l<cr>', { desc = 'Go to right window' })
+map('t', '<C-/>', '<cmd>close<cr>', { desc = 'Hide terminal' })
 map('t', '<c-_>', '<cmd>close<cr>', { desc = 'which_key_ignore' })
 
 -- Windows
-map('n', '<leader>ww', '<C-W>p', {
+map('n', keys.key.window 'w', '<C-W>p', {
   desc = 'Other Window',
   remap = true,
 })
-map('n', '<leader>wd', '<C-W>c', {
+map('n', keys.key.window 'd', '<C-W>c', {
   desc = 'Delete Window',
   remap = true,
 })
-map('n', '<leader>w-', '<C-W>s', {
+map('n', keys.key.window '-', '<C-W>s', {
   desc = 'Split Window Below',
   remap = true,
 })
-map('n', '<leader>w|', '<C-W>v', {
+map('n', keys.key.window '|', '<C-W>v', {
   desc = 'Split Window Right',
   remap = true,
 })
@@ -58,12 +50,12 @@ map('n', '<leader>|', '<C-W>v', {
 })
 
 -- Tabs
-map('n', '<leader><tab>l', '<cmd>tablast<cr>', { desc = 'Last Tab' })
-map('n', '<leader><tab>f', '<cmd>tabfirst<cr>', { desc = 'First Tab' })
-map('n', '<leader><tab><tab>', '<cmd>tabnew<cr>', { desc = 'New Tab' })
-map('n', '<leader><tab>]', '<cmd>tabnext<cr>', { desc = 'Next Tab' })
-map('n', '<leader><tab>d', '<cmd>tabclose<cr>', { desc = 'Close Tab' })
-map('n', '<leader><tab>[', '<cmd>tabprevious<cr>', { desc = 'Previous Tab' })
+map('n', keys.key.tab 'l', '<cmd>tablast<cr>', { desc = 'Last tab' })
+map('n', keys.key.tab 'f', '<cmd>tabfirst<cr>', { desc = 'First tab' })
+map('n', keys.key.tab '<tab>', '<cmd>tabnew<cr>', { desc = 'New tab' })
+map('n', keys.key.tab ']', '<cmd>tabnext<cr>', { desc = 'Next tab' })
+map('n', keys.key.tab 'd', '<cmd>tabclose<cr>', { desc = 'Close tab' })
+map('n', keys.key.tab '[', '<cmd>tabprevious<cr>', { desc = 'Previous tab' })
 
 -- TIP: Disable arrow keys in normal mode
 -- map('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -115,12 +107,11 @@ map('n', ']b', function()
   util.close_floating_windows()
   vim.cmd.bnext()
 end, { desc = 'Next buffer' })
-map('n', '<leader>bb', '<cmd>e #<cr>', { desc = 'Switch to other buffer' })
-map('n', '<leader>`', '<cmd>e #<cr>', { desc = 'Switch to other buffer' })
+map('n', keys.key.buffer 'b', '<cmd>e #<cr>', { desc = 'Switch to other buffer' })
 
 -- Clear search, diff update and redraw
 -- taken from runtime/lua/_editor.lua (from LazyVim?)
-map('n', '<leader>ur', '<cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><cr>', {
+map('n', keys.key.ui 'r', '<cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><cr>', {
   desc = 'Redraw / clear hlsearch / diff update',
 })
 
@@ -155,7 +146,7 @@ map('v', '<', '<gv')
 map('v', '>', '>gv')
 
 -- New file
-map('n', '<leader>fn', '<cmd>new<cr>', { desc = 'New file' })
+map('n', keys.key.file 'n', '<cmd>new<cr>', { desc = 'New file' })
 
 -- Troubleshooting
 map('n', '<leader>xl', '<cmd>lopen<cr>', { desc = 'Location list' })
@@ -199,7 +190,4 @@ map('n', '<C-w>/', function()
     vim.cmd('split | silent! ijump /' .. word .. '/')
   end
 end)
-map('n', '<leader>/', require('snacks').picker.grep)
-map('n', '<leader>g/', require('snacks').picker.grep_word)
-
 map('x', '/', '<esc>/\\%V') -- `:h /\%V`
