@@ -146,6 +146,7 @@
             terraform = builtins.attrValues {
               inherit (pkgs)
                 opentofu
+                tofu-ls
                 terraform-ls
                 ;
             };
