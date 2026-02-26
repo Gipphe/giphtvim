@@ -85,7 +85,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
 -- NOTE: nixCats: this just gives nixCats global command a default value
--- so that it doesnt throw an error if you didnt install via nix.
+-- so that it doesnt throw an error if you didn't install via nix.
 -- usage of both this setup and the nixCats command is optional,
 -- but it is very useful for passing info from nix to lua so you will likely use it at least once.
 require('nixCatsUtils').setup {
@@ -111,6 +111,9 @@ local lazyOptions = {
   lockfile = getlockfilepath(),
   install = {
     missing = not require('nixCatsUtils').isNixCats,
+  },
+  rocks = {
+    hererocks = false,
   },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
