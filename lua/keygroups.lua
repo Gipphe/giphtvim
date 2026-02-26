@@ -1,5 +1,33 @@
 local M = {}
 
+---@class Keygroup
+---@field prefix string
+---@field group string
+---@field mode string[]
+
+---@alias KeygroupName
+---| 'goto'
+---| 'surround'
+---| 'fold'
+---| 'next'
+---| 'prev'
+---| 'tab'
+---| 'buffer'
+---| 'git'
+---| 'search'
+---| 'code'
+---| 'ui'
+---| 'find'
+---| 'inspect'
+---| 'diagnostic'
+---| 'help'
+---| 'navigation'
+---| 'quit'
+---| 'window'
+
+---@alias KeygroupNameWithAliases KeygroupName | 'session' | 'file'
+
+---@type table<KeygroupName, Keygroup>
 M.groups = {
   goto = {
     prefix = 'g',
@@ -98,13 +126,14 @@ local aliases = {
   file = 'find',
 }
 
+---@type table<KeygroupNameWithAliases, Keygroup>
 M.groups_with_aliases = vim.tbl_extend('force', {}, M.groups)
 
 for a, n in pairs(aliases) do
   M.groups_with_aliases[a] = M.groups_with_aliases[n]
 end
 
----@type table<string, string>
+---@type table<KeygroupNameWithAliases, string>
 M.prefixes = {}
 for k, g in pairs(M.groups_with_aliases) do
   M.prefixes[k] = g.prefix
@@ -116,7 +145,7 @@ for _, g in pairs(M.groups) do
   M.which_key[#M.which_key + 1] = g
 end
 
----@type table<string, fun(s: string): string>
+---@type table<KeygroupNameWithAliases, fun(s: string): string>
 M.key = {}
 for k, g in pairs(M.groups_with_aliases) do
   M.key[k] = function(s)
