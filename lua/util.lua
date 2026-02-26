@@ -75,7 +75,6 @@ end
 ---@return any[]
 function M.flatten(...)
   local ret = {}
-  local args = { ... }
   for i = 1, select('#', ...) do
     local l = select(i, ...)
     vim.list_extend(ret, l)
