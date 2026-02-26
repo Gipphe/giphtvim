@@ -11,14 +11,19 @@ return {
     },
     ---@type snacks.Config
     opts = {
-      bigfile = {},
-      indent = {},
-      input = {},
-      notifier = {},
-      quickfile = {},
-      scope = {},
-      statuscolumn = {},
-      words = {},
+      bigfile = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+
+      dashboard = { enabled = false },
+      explorer = { enabled = false },
+      lazygit = { enabled = false },
+      scroll = { enabled = false },
     },
     -- init = function()
     --   ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
