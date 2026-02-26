@@ -57,8 +57,7 @@ local code = {
 groups[#groups + 1] = code
 
 local buffers = {
-  group = keys.groups.buffers,
-
+  group = keys.groups.buffer,
   {
     'h',
     function()
