@@ -21,8 +21,46 @@ local M = {}
 ---@type boolean
 M.isNixCats = vim.g[ [[nixCats-special-rtp-entry-nixCats]] ] ~= nil
 
+---@class CallableTable<T> : table<T, any>
+---@field __call fun(path: string): any|nil
+
+---Attaches a metatable with a __call that retrieves the a nested table value
+---accessible using dot-notation, or with a table of strings.
+---
+---```
+---local tbl = mk_with_meta { foo = 'bar', baz = {quack = 'quux'}}
+---print(tbl('foo'))
+--- --> 'bar'
+---print(tbl('baz.quack'))
+--- --> 'quux'
+---print(tbl({'baz', 'quack'}))
+--- --> 'quux'
+---```
+---@generic T
+---@param tbl table<T, any>
+---@return CallableTable<T>
+local mk_with_meta = function(tbl)
+  return setmetatable(tbl, {
+    __call = function(_, attrpath)
+      local strtable = {}
+      if type(attrpath) == 'table' then
+        strtable = attrpath
+      elseif type(attrpath) == 'string' then
+        for key in attrpath:gmatch '([^%.]+)' do
+          table.insert(strtable, key)
+        end
+      else
+        print 'function requires a table of strings or a dot separated string'
+        return
+      end
+      return vim.tbl_get(tbl, unpack(strtable))
+    end,
+  })
+end
+
 ---@class nixCatsSetupOpts
 ---@field non_nix_value boolean|nil
+---@field local_cat_file_path string|nil File path to local categories file. Defaults to `~/.config/nvim/nix_cats_local_categories.json`.
 
 ---This function will setup a mock nixCats plugin when not using nix
 ---It will help prevent you from running into indexing errors without a nixCats plugin from nix.
@@ -32,33 +70,39 @@ M.isNixCats = vim.g[ [[nixCats-special-rtp-entry-nixCats]] ] ~= nil
 function M.setup(v)
   if not M.isNixCats then
     local nixCats_default_value
-    if type(v) == 'table' and type(v.non_nix_value) == 'boolean' then
+
+    local cat_file_path = v.local_cat_file_path
+    if type(cat_file_path) ~= 'string' or cat_file_path == '' then
+      local config_path = vim.fn.stdpath 'config'
+      cat_file_path = config_path .. '/nix_cats_local_categories.json'
+    end
+    local local_cats = M.getLocalCats(cat_file_path)
+
+    if type(local_cats) == 'table' and type(local_cats.categories) == 'table' then
+      local_cats.categories = mk_with_meta(M.local_cats.categories)
+    end
+
+    if type(local_cats) == 'table' and type(local_cats.default_value) == 'boolean' then
+      nixCats_default_value = local_cats.default_value
+    elseif type(v) == 'table' and type(v.non_nix_value) == 'boolean' then
       nixCats_default_value = v.non_nix_value
     else
       nixCats_default_value = true
     end
-    local mk_with_meta = function(tbl)
-      return setmetatable(tbl, {
-        __call = function(_, attrpath)
-          local strtable = {}
-          if type(attrpath) == 'table' then
-            strtable = attrpath
-          elseif type(attrpath) == 'string' then
-            for key in attrpath:gmatch '([^%.]+)' do
-              table.insert(strtable, key)
-            end
-          else
-            print 'function requires a table of strings or a dot separated string'
-            return
-          end
-          return vim.tbl_get(tbl, unpack(strtable))
-        end,
-      })
-    end
     package.preload['nixCats'] = function()
       local ncsub = {
-        get = function(_)
-          return nixCats_default_value
+        ---@param cat string|string[]
+        get = function(cat)
+          if type(local_cats) ~= 'table' or type(local_cats.categories) ~= 'table' then
+            return nixCats_default_value
+          end
+
+          local cat_val = local_cats.categories(cat)
+          if cat_val == nil then
+            return nixCats_default_value
+          else
+            return cat_val
+          end
         end,
         cats = mk_with_meta {
           nixCats_config_location = vim.fn.stdpath 'config',
@@ -88,6 +132,34 @@ function M.setup(v)
     end
     _G.nixCats = require 'nixCats'
   end
+end
+
+---@class LocalCats<T>
+---@field categories table<T, boolean> Configured categories.
+---@field default_value boolean|nil Default value for undefined categories.
+
+---@param cat_file_path string
+---@return LocalCats|nil
+function M.getLocalCats(cat_file_path)
+  local exists = vim.uv.fs_stat(cat_file_path) ~= nil
+  if not exists then
+    return nil
+  end
+
+  local local_cats = vim.fn.json_decode(vim.fn.readfile(cat_file_path))
+  if type(local_cats) ~= 'table' then
+    vim.notify 'Local cats is not a JSON object'
+    return nil
+  end
+
+  local valid_cats = type(local_cats.categories) == 'table'
+  local valid_default_value = local_cats.default_value == nil or type(local_cats.default_value) == 'boolean'
+  if not valid_cats or not valid_default_value then
+    vim.notify 'Local cats is not a valid LocalCats object'
+    return nil
+  end
+
+  return local_cats
 end
 
 ---allows you to guarantee a boolean is returned, and also declare a different
