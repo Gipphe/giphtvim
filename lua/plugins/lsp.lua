@@ -1,8 +1,9 @@
 local keys = require 'keygroups'
+local catUtils = require 'nixCatsUtils'
 return {
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    enabled = nixCats 'lsp',
+    enabled = catUtils.cat('lsp', false),
 
     -- lspconfig {{{
     -- Enable the following language servers
@@ -24,7 +25,7 @@ return {
     opts = {
       category_servers = {
         elm = 'elmls',
-        nix = { 'nil', require('nixCatsUtils').whenNixCatsElse('nixd', 'rnix') },
+        nix = { 'nil', catUtils.whenNixCatsElse('nixd', 'rnix') },
         powershell = 'powershell_es',
         bash = 'bashls',
         json = 'jsonls',
@@ -51,7 +52,7 @@ return {
         'williamboman/mason.nvim',
         -- NOTE: nixCats: only enable mason if nix wasn't involved.
         -- because we will be using nix to download things instead.
-        enabled = not require('nixCatsUtils').isNixCats,
+        enabled = not catUtils.isNixCats,
         opts = {},
       }, -- NOTE: Must be loaded before dependants
 
@@ -59,14 +60,14 @@ return {
         'williamboman/mason-lspconfig.nvim',
         -- NOTE: nixCats: only enable mason if nix wasn't involved.
         -- because we will be using nix to download things instead.
-        enabled = not require('nixCatsUtils').isNixCats,
+        enabled = not catUtils.isNixCats,
       },
 
       {
         'WhoIsSethDaniel/mason-tool-installer.nvim',
         -- NOTE: nixCats: only enable mason if nix wasn't involved.
         -- because we will be using nix to download things instead.
-        enabled = not require('nixCatsUtils').isNixCats,
+        enabled = not catUtils.isNixCats,
       },
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -226,7 +227,7 @@ return {
 
       -- Append servers based on categories
       for cat, srvs in pairs(opts.category_servers) do
-        if nixCats(cat) then
+        if catUtils.cat(cat, false) then
           local srvs_list = srvs
           if type(srvs) == 'function' then
             srvs_list = srvs()
@@ -243,7 +244,7 @@ return {
       -- NOTE: nixCats: if nix, use vim.lsp instead of mason
       -- You could MAKE it work, using lspsAndRuntimeDeps and sharedLibraries in nixCats
       -- but don't... its not worth it. Just add the lsp to lspsAndRuntimeDeps.
-      if require('nixCatsUtils').isNixCats then
+      if catUtils.isNixCats then
         vim.lsp.enable(servers)
       else
         -- NOTE: nixCats: and if no nix, do it the normal way
@@ -272,7 +273,7 @@ return {
   -- used for completion, annotations and signatures of Neovim apis
   {
     'folke/lazydev.nvim',
-    enabled = nixCats 'lsp' and nixCats 'lua',
+    enabled = catUtils.cat('lsp', false) and catUtils.cat('lua', false),
     dependencies = {
       {
         'saghen/blink.cmp',
@@ -305,7 +306,7 @@ return {
 
   {
     'mrcjkb/haskell-tools.nvim',
-    enabled = nixCats 'lsp' and nixCats 'haskell',
+    enabled = catUtils.cat('lsp', false) and catUtils.cat('haskell', false),
     version = '^6',
     lazy = false, -- This plugin is already lazy
     config = function()
@@ -341,7 +342,7 @@ return {
 
   {
     'jmbuhr/otter.nvim',
-    enabled = nixCats 'lsp',
+    enabled = catUtils.cat('lsp', false),
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
     },
@@ -352,19 +353,19 @@ return {
 
   {
     'elkowar/yuck.vim',
-    enabled = nixCats 'yuck',
+    enabled = catUtils.cat('yuck', false),
     ft = { 'yuck' },
   },
 
   {
     'lukahartwig/pnpm.nvim',
-    enabled = nixCats 'js' or nixCats 'ts',
+    enabled = catUtils.cat('js', false) or catUtils.cat('ts', false),
     ft = { 'js', 'ts', 'tsx', 'jsx' },
   },
 
   {
     'fatih/vim-go',
-    enabled = nixCats 'go',
+    enabled = catUtils.cat('go', false),
     ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },
     config = function()
       vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufWinEnter', 'BufWritePre' }, {

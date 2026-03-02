@@ -1,3 +1,4 @@
+local catUtils = require 'nixCatsUtils'
 local util = require 'util'
 local keys = require 'keygroups'
 local icons = util.icons
@@ -163,7 +164,7 @@ return {
 
   {
     'folke/todo-comments.nvim',
-    enabled = nixCats 'rich_ui',
+    enabled = catUtils.cat('rich_ui', false),
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
     ---@type TodoOptions

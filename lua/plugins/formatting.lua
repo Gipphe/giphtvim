@@ -1,3 +1,4 @@
+local catUtils = require 'nixCatsUtils'
 local keys = require 'keygroups'
 local prettier = { 'prettierd', 'prettier', stop_after_first = true }
 
@@ -103,7 +104,7 @@ return {
     }
 
     for cat, formatters in pairs(category_formatters) do
-      if nixCats(cat) then
+      if catUtils.cat(cat, true) then
         settings.formatters_by_ft = vim.tbl_deep_extend('force', {}, settings.formatters_by_ft, formatters)
       end
     end

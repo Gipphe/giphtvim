@@ -88,7 +88,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- so that it doesnt throw an error if you didn't install via nix.
 -- usage of both this setup and the nixCats command is optional,
 -- but it is very useful for passing info from nix to lua so you will likely use it at least once.
-require('nixCatsUtils').setup {
+local catUtils = require 'nixCatsUtils'
+catUtils.setup {
   non_nix_value = true,
 }
 
@@ -100,7 +101,7 @@ require 'commands'
 
 -- NOTE: nixCats: You might want to move the lazy-lock.json file
 local function getlockfilepath()
-  if require('nixCatsUtils').isNixCats and type(nixCats.settings.unwrappedCfgPath) == 'string' then
+  if catUtils.isNixCats and type(nixCats.settings.unwrappedCfgPath) == 'string' then
     return nixCats.settings.unwrappedCfgPath .. '/lazy-lock.json'
   else
     return vim.fn.stdpath 'config' .. '/lazy-lock.json'
@@ -110,7 +111,7 @@ end
 local lazyOptions = {
   lockfile = getlockfilepath(),
   install = {
-    missing = not require('nixCatsUtils').isNixCats,
+    missing = not catUtils.isNixCats,
   },
   rocks = {
     hererocks = false,

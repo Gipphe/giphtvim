@@ -178,6 +178,13 @@ function M.enableForCategory(v, default)
   end
 end
 
+---Short name for `enableForCategory`
+---@overload fun(v: string|string[]): boolean
+---@overload fun(v: string|string[], default: boolean): boolean
+function M.cat(v, default)
+  return M.enableForCategory(v, default)
+end
+
 ---if nix, return value of nixCats(v) else return default
 ---Exists to specify a different non_nix_value than the one in setup()
 ---@param v string|string[]

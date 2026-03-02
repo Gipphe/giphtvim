@@ -1,3 +1,4 @@
+local catUtils = require 'nixCatsUtils'
 return {
   {
     'andymass/vim-matchup',
@@ -89,7 +90,7 @@ return {
     -- },
     branch = 'main',
     lazy = false,
-    build = require('nixCatsUtils').lazyAdd ':TSUpdate',
+    build = catUtils.lazyAdd ':TSUpdate',
     opts = {
       install_dir = vim.fn.stdpath 'data' .. '/site',
     },

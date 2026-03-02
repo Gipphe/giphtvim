@@ -1,8 +1,9 @@
 local keys = require 'keygroups'
+local catUtils = require 'nixCatsUtils'
 return {
   {
     'nvim-pack/nvim-spectre',
-    enabled = nixCats 'rich_editor',
+    enabled = catUtils.cat('rich_editor', false),
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'folke/trouble.nvim',
@@ -23,7 +24,7 @@ return {
 
   {
     'folke/flash.nvim',
-    enabled = nixCats 'rich_editor',
+    enabled = catUtils.cat('rich_editor', false),
     event = 'VeryLazy',
     ---@type Flash.Config
     opts = {},
@@ -72,7 +73,7 @@ return {
 
   {
     'linux-cultist/venv-selector.nvim',
-    enabled = nixCats 'rich_editor',
+    enabled = catUtils.cat('rich_editor', false),
     dependencies = {
       'neovim/nvim-lspconfig',
       'folke/snacks.nvim',
@@ -91,7 +92,7 @@ return {
 
   {
     'aca/marp.nvim',
-    enabled = nixCats 'rich_editor',
+    enabled = catUtils.cat('rich_editor', false),
     main = 'marp.nvim',
     version = false,
     dependencies = {
