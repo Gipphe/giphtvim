@@ -31,7 +31,7 @@ return {
         json = 'jsonls',
         html = 'html',
         js = { 'eslint', 'tailwindcss' },
-        ts = { 'eslint', 'taildinwcss', 'ts_ls' },
+        ts = { 'eslint', 'taildinwcss', 'ts_ls', 'denols' },
         fish = 'fish_lsp',
         terraform = 'terraformls',
         yaml = 'yamlls',
