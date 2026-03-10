@@ -365,7 +365,7 @@
               go = false;
               haskell = true;
               html = true;
-              js = false;
+              js = true;
               lua = true;
               markdown = true;
               nix = true;
@@ -375,7 +375,7 @@
               rust = true;
               sql = true;
               terraform = true;
-              ts = false;
+              ts = true;
               xml = false;
               yaml = true;
               yuck = true;
