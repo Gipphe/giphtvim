@@ -441,8 +441,15 @@ return {
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
     opts = {},
+    ft = { 'markdown' },
     keys = {
-      { keys.key.ui 'm', '<cmd>RenderMarkdown toggle<cr>', desc = 'Toggle Markdown rendering' },
+      {
+        keys.key.ui 'm',
+        function()
+          require('render-markdown').set_buf()
+        end,
+        desc = 'Toggle Markdown rendering',
+      },
     },
   },
 }
