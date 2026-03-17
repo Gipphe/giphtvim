@@ -139,8 +139,8 @@
             };
             markdown = builtins.attrValues {
               inherit (pkgs)
-                marksman
                 markdownlint-cli
+                marksman
                 ;
             };
             terraform = builtins.attrValues {
@@ -260,6 +260,7 @@
             js = [ pnpm-nvim ];
             ts = [ pnpm-nvim ];
             yuck = [ pkgs.vimPlugins.yuck-vim ];
+            markdown = [ pkgs.vimPlugins.render-markdown-nvim ];
 
             lsp = builtins.attrValues {
               inherit (pkgs.vimPlugins)

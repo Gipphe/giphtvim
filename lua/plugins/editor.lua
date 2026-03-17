@@ -431,4 +431,18 @@ return {
       disable_filetype = { 'TelescopePrompt', 'vim' },
     },
   },
+
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+    },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+    keys = {
+      { keys.key.ui 'm', '<cmd>RenderMarkdown toggle<cr>', desc = 'Toggle Markdown rendering' },
+    },
+  },
 }
