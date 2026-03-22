@@ -56,7 +56,7 @@ return {
       --
       -- ensure_installed = require('nixCatsUtils').whenNotNixCatsElse { 'stable' },
       -- auto_install = not require('nixCatsUtils').isNixCats,
-      -- ensure_installed = {'stable'},
+      ensure_installed = { 'stable' },
       auto_install = true,
       highlight = {
         enable = true,
