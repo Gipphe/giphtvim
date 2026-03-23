@@ -71,26 +71,10 @@
       categoryDefinitions =
         { pkgs, ... }:
         let
-          marp-nvim = pkgs.vimUtils.buildVimPlugin {
-            pname = "marp-nvim";
-            version = "2025-04-02";
-            src = pkgs.fetchFromGitHub {
-              owner = "aca";
-              repo = "marp.nvim";
-              rev = "58d9544d0fa2d78b538e2e2a9b4c018228af0bfe";
-              hash = "sha256-aVQsE3aQRH0t7FRtOYlc4+sqcycpa0VBGrww2anEJmA=";
-            };
-          };
-          pnpm-nvim = pkgs.vimUtils.buildVimPlugin {
-            pname = "pnpm.nvim";
-            version = "2025-04-02";
-            src = pkgs.fetchFromGitHub {
-              owner = "lukahartwig";
-              repo = "pnpm.nvim";
-              rev = "b44002c8da2ef68a023ff2c3fa2c454c6c7fa279";
-              hash = "sha256-iJ7f4+nB04rlkLr/faCrBUsbgiRT7f9IDQMM0R6xT9M=";
-            };
-          };
+          inherit (self.packages.${pkgs.stdenv.hostPlatform.system}.vimPlugins)
+            pnpm-nvim
+            marp-nvim
+            ;
         in
         {
           # to define and use a new category, simply add a new list to a set here,
@@ -237,7 +221,6 @@
                 wilder-nvim
                 zellij-nav-nvim
                 ;
-
             };
 
             go = [ pkgs.vimPlugins.vim-go ];
@@ -464,6 +447,28 @@
         # and set the default package to the one passed in here.
         packages = utils.mkAllWithDefault defaultPackage // {
           prettier-with-plugins = pkgs.callPackage ./packages/prettier-with-plugins.nix { };
+          vimPlugins = {
+            marp-nvim = pkgs.vimUtils.buildVimPlugin {
+              pname = "marp-nvim";
+              version = "2025-04-02";
+              src = pkgs.fetchFromGitHub {
+                owner = "aca";
+                repo = "marp.nvim";
+                rev = "58d9544d0fa2d78b538e2e2a9b4c018228af0bfe";
+                hash = "sha256-aVQsE3aQRH0t7FRtOYlc4+sqcycpa0VBGrww2anEJmA=";
+              };
+            };
+            pnpm-nvim = pkgs.vimUtils.buildVimPlugin {
+              pname = "pnpm.nvim";
+              version = "2025-04-02";
+              src = pkgs.fetchFromGitHub {
+                owner = "lukahartwig";
+                repo = "pnpm.nvim";
+                rev = "b44002c8da2ef68a023ff2c3fa2c454c6c7fa279";
+                hash = "sha256-iJ7f4+nB04rlkLr/faCrBUsbgiRT7f9IDQMM0R6xT9M=";
+              };
+            };
+          };
         };
 
         # choose your package for devShell
