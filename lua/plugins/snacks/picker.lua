@@ -85,49 +85,49 @@ local git = {
   group = keys.groups.git,
 
   {
-    'b',
+    'pb',
     function()
       require('snacks').picker.git_branches()
     end,
     desc = 'Git branches',
   },
   {
-    'l',
+    'pl',
     function()
       require('snacks').picker.git_log()
     end,
     desc = 'Git log',
   },
   {
-    'L',
+    'pL',
     function()
       require('snacks').picker.git_log_line()
     end,
     desc = 'Git log line',
   },
   {
-    's',
+    'ps',
     function()
       require('snacks').picker.git_status()
     end,
     desc = 'Git status',
   },
   {
-    'S',
+    'pS',
     function()
       require('snacks').picker.git_stash()
     end,
     desc = 'Git stash',
   },
   {
-    'd',
+    'pd',
     function()
       require('snacks').picker.git_diff()
     end,
     desc = 'Git diff (hunks)',
   },
   {
-    'f',
+    'pf',
     function()
       require('snacks').picker.git_log_file()
     end,
