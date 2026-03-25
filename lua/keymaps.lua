@@ -191,3 +191,24 @@ map('n', '<C-w>/', function()
   end
 end)
 map('x', '/', '<esc>/\\%V') -- `:h /\%V`
+
+local jj_keys = function()
+  ---@param cmd string
+  local function jj(cmd)
+    return vim.fn.execute('jj ' .. cmd)
+  end
+
+  map('n', keys.key.jj 'b', function()
+    local filename = vim.api.nvim_buf_get_name(0)
+    local line = vim.api.nvim_win_get_cursor(0)[1]
+    local blame_output = jj('file annotate ' .. filename)
+    local blame_line = vim.split(blame_output, '\n')[line]
+    local change_id = blame_line:match '%S+' --[[@as string]]
+    local show_output = jj('show --color always -r ' .. change_id)
+    local _bufnr, _winnr = vim.lsp.util.open_floating_preview(show_output, 'markdown', {
+      border = 'rounded',
+      focusable = true,
+    })
+  end, { desc = 'Jujutsu blame' })
+end
+jj_keys()

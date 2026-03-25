@@ -13,6 +13,7 @@ local M = {}
 ---| 'prev'
 ---| 'tab'
 ---| 'buffer'
+---| 'jj'
 ---| 'git'
 ---| 'search'
 ---| 'code'
@@ -62,6 +63,11 @@ M.groups = {
   buffer = {
     prefix = '<leader>b',
     group = '+buffers',
+    mode = { 'n', 'v' },
+  },
+  jj = {
+    prefix = '<leader>j',
+    group = '+jj',
     mode = { 'n', 'v' },
   },
   git = {
