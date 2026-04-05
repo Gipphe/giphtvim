@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
+    wlib = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # neovim-nightly-overlay = {
     #   url = "github:nix-community/neovim-nightly-overlay";
@@ -145,15 +149,15 @@
             sql = [ pkgs.sqls ];
             js = builtins.attrValues {
               inherit (pkgs)
-                vscode-langservers-extracted
                 tailwindcss-language-server
+                vscode-langservers-extracted
                 ;
             };
             ts = builtins.attrValues {
               inherit (pkgs)
-                vscode-langservers-extracted
                 tailwindcss-language-server
                 typescript-language-server
+                vscode-langservers-extracted
                 ;
             };
             html = [ pkgs.vscode-langservers-extracted ];
