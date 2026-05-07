@@ -74,6 +74,7 @@
           inherit (self.packages.${pkgs.stdenv.hostPlatform.system}.vimPlugins)
             pnpm-nvim
             marp-nvim
+            nvim-highlight-colors
             ;
         in
         {
@@ -185,43 +186,44 @@
 
           # This is for plugins that will load at startup without using packadd:
           startupPlugins = {
-            general = builtins.attrValues {
-              inherit (pkgs.vimPlugins)
-                blink-cmp
-                bufferline-nvim
-                catppuccin-nvim
-                conform-nvim
-                gitsigns-nvim
-                guess-indent-nvim
-                lazy-nvim
-                luasnip
-                mini-ai
-                mini-bufremove
-                mini-comment
-                mini-indentscope
-                mini-statusline
-                mini-surround
-                nvim-autopairs
-                nvim-highlight-colors
-                nvim-treesitter
-                nvim-treesitter-context
-                nvim-ts-autotag
-                nvim-ts-context-commentstring
-                nvim-web-devicons
-                oil-nvim
-                persistence-nvim
-                plenary-nvim
-                promise-async
-                snacks-nvim
-                treesitter-modules-nvim
-                undotree
-                vim-css-color
-                vim-matchup
-                which-key-nvim
-                wilder-nvim
-                zellij-nav-nvim
-                ;
-            };
+            general =
+              builtins.attrValues {
+                inherit (pkgs.vimPlugins)
+                  blink-cmp
+                  bufferline-nvim
+                  catppuccin-nvim
+                  conform-nvim
+                  gitsigns-nvim
+                  guess-indent-nvim
+                  lazy-nvim
+                  luasnip
+                  mini-ai
+                  mini-bufremove
+                  mini-comment
+                  mini-indentscope
+                  mini-statusline
+                  mini-surround
+                  nvim-autopairs
+                  nvim-treesitter
+                  nvim-treesitter-context
+                  nvim-ts-autotag
+                  nvim-ts-context-commentstring
+                  nvim-web-devicons
+                  oil-nvim
+                  persistence-nvim
+                  plenary-nvim
+                  promise-async
+                  snacks-nvim
+                  treesitter-modules-nvim
+                  undotree
+                  vim-css-color
+                  vim-matchup
+                  which-key-nvim
+                  wilder-nvim
+                  zellij-nav-nvim
+                  ;
+              }
+              ++ [ nvim-highlight-colors ];
 
             go = [ pkgs.vimPlugins.vim-go ];
 
@@ -467,6 +469,25 @@
                 rev = "b44002c8da2ef68a023ff2c3fa2c454c6c7fa279";
                 hash = "sha256-iJ7f4+nB04rlkLr/faCrBUsbgiRT7f9IDQMM0R6xT9M=";
               };
+            };
+            # TODO: Use upstream package once it is updated to include the
+            # license, and thus is no longer considered "non-free".
+            nvim-highlight-colors = pkgs.vimUtils.buildVimPlugin {
+              pname = "nvim-highlight-colors";
+              version = "2026-05-07";
+              src = pkgs.fetchFromGitHub {
+                owner = "brenoprata10";
+                repo = "nvim-highlight-colors";
+                rev = "e4c7af0211866162d999ce0bdd6a029302e19139";
+                hash = "sha256-4tkehMJpMs/CrQrCFqy+4G9uQei9mAoQlwvxuYtu7z8=";
+              };
+              nvimSkipModules = [
+                "nvim-highlight-colors.color.converters_spec"
+                "nvim-highlight-colors.color.patterns_spec"
+                "nvim-highlight-colors.color.utils_spec"
+                "nvim-highlight-colors.buffer_utils_spec"
+                "nvim-highlight-colors.utils_spec"
+              ];
             };
           };
         };
