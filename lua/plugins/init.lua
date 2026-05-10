@@ -1,0 +1,7 @@
+require 'plugins/snacks'
+require 'plugins/cmp'
+require 'plugins/formatting'
+require 'plugins/lsp'
+require 'plugins/mini'
+require 'plugins/treesitter'
+require 'plugins/ui'

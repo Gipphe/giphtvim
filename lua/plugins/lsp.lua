@@ -1,74 +1,48 @@
+local util = require 'util'
 local keys = require 'keygroups'
 local catUtils = require 'nixCatsUtils'
+
+if catUtils.cat('lsp', false) then
+  if not catUtils.isNixCats then
+    util.fetch_plugin(util.gh 'williamboman/mason.nvim')
+    require('mason').setup {}
+    util.fetch_plugin(util.gh 'williamboman/mason-lspconfig.nvim')
+    util.fetch_plugin(util.gh 'WhoIsSethDaniel/mason-tool-installer.nvim')
+  end
+  util.fetch_plugin(util.gh 'neovim/nvim-lspconfig')
+
+  local opts = {
+    category_servers = {
+      elm = 'elmls',
+      nix = { 'nil', catUtils.whenNixCatsElse('nixd', 'rnix') },
+      powershell = 'powershell_es',
+      bash = 'bashls',
+      json = 'jsonls',
+      html = 'html',
+      js = { 'eslint', 'tailwindcss' },
+      ts = { 'eslint', 'taildinwcss', 'ts_ls', 'denols' },
+      fish = 'fish_lsp',
+      terraform = 'terraformls',
+      yaml = 'yamlls',
+      markdown = 'marksman',
+      python = 'ruff',
+      lua = 'lua_ls',
+      docker = 'dockerls',
+      qml = 'qmlls',
+      xml = 'lemminx',
+      go = 'gopls',
+      sql = 'sqls',
+      rust = 'rust_analyzer',
+    },
+  }
+end
+
 return {
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     enabled = catUtils.cat('lsp', false),
 
-    -- lspconfig {{{
-    -- Enable the following language servers
-    --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-    --
-    --  Add any additional override configuration in the following tables. Available keys are:
-    --  - cmd (table): Override the default command used to start the server
-    --  - filetypes (table): Override the default list of associated filetypes for the server
-    --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-    --  - settings (table): Override the default settings passed when initializing the server.
-    --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-    -- NOTE: nixCats: there is help in nixCats for lsps at `:h nixCats.LSPs` and also `:h nixCats.luaUtils`
-    --
-    -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
-    --
-    -- Some languages (like typescript) have entire language plugins that can be useful:
-    --    https://github.com/pmizio/typescript-tools.nvim
-    -- }}}
-    opts = {
-      category_servers = {
-        elm = 'elmls',
-        nix = { 'nil', catUtils.whenNixCatsElse('nixd', 'rnix') },
-        powershell = 'powershell_es',
-        bash = 'bashls',
-        json = 'jsonls',
-        html = 'html',
-        js = { 'eslint', 'tailwindcss' },
-        ts = { 'eslint', 'taildinwcss', 'ts_ls', 'denols' },
-        fish = 'fish_lsp',
-        terraform = 'terraformls',
-        yaml = 'yamlls',
-        markdown = 'marksman',
-        python = 'ruff',
-        lua = 'lua_ls',
-        docker = 'dockerls',
-        qml = 'qmlls',
-        xml = 'lemminx',
-        go = 'gopls',
-        sql = 'sqls',
-        rust = 'rust_analyzer',
-      },
-    },
     dependencies = {
-      {
-        -- Automatically install LSPs and related tools to stdpath for Neovim
-        'williamboman/mason.nvim',
-        -- NOTE: nixCats: only enable mason if nix wasn't involved.
-        -- because we will be using nix to download things instead.
-        enabled = not catUtils.isNixCats,
-        opts = {},
-      }, -- NOTE: Must be loaded before dependants
-
-      {
-        'williamboman/mason-lspconfig.nvim',
-        -- NOTE: nixCats: only enable mason if nix wasn't involved.
-        -- because we will be using nix to download things instead.
-        enabled = not catUtils.isNixCats,
-      },
-
-      {
-        'WhoIsSethDaniel/mason-tool-installer.nvim',
-        -- NOTE: nixCats: only enable mason if nix wasn't involved.
-        -- because we will be using nix to download things instead.
-        enabled = not catUtils.isNixCats,
-      },
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       {

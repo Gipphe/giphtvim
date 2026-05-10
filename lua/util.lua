@@ -215,4 +215,22 @@ M.icons = {
   },
 }
 
+function M.fetch_plugin(plugin)
+  if require('nixCatsUtils').isNixCats then
+    return
+  end
+
+  plugin = type(plugin) == 'string' and { src = plugin } or plugin
+  plugin.name = type(plugin.name) == 'string' and plugin.name or vim.fs.basename(plugin.src)
+
+  local res = vim.pack.get { plugin.name }
+  if #res == 0 then
+    vim.pack.add { plugin }
+  end
+end
+
+function M.gh(slug)
+  return 'https://github.com/' .. slug
+end
+
 return M
