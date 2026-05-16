@@ -1,97 +1,148 @@
---[[
+local util = require 'util'
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
+-- NOTE: Welcome to your neovim configuration!
+-- The first 100ish lines are setup,
+-- the rest is usage of lze and various core plugins!
+vim.loader.enable() -- <- bytecode caching
+do
+  -- Set up a global in a way that also handles non-nix compat
+  local ok
+  ok, _G.nixInfo = pcall(require, vim.g.nix_info_plugin_name)
+  if not ok then
+    package.loaded[vim.g.nix_info_plugin_name] = setmetatable({}, {
+      __call = function(_, default)
+        return default
+      end,
+    })
+    _G.nixInfo = require(vim.g.nix_info_plugin_name)
+    -- If you always use the fetcher function to fetch nix values,
+    -- rather than indexing into the tables directly,
+    -- it will use the value you specified as the default
+    -- TODO: for non-nix compat, vim.pack.add in another file and require here.
 
-What is Kickstart?
+    -- If we're not in Nix, we have to fetch the plugins like normal. First we
+    -- fetch lze.
+    vim.pack.add {
+      util.gh 'BirdeeHub/lze',
+      util.gh 'BirdeeHub/lzextras',
+    }
+  end
+  nixInfo.isNix = vim.g.nix_info_plugin_name ~= nil
 
-  Kickstart.nvim is *not* a distribution.
+  ---@module 'lzextras'
+  ---@type lzextras | lze
+  nixInfo.lze = setmetatable(require 'lze', getmetatable(require 'lzextras'))
+  function nixInfo.get_nix_plugin_path(name)
+    return nixInfo(nil, 'plugins', 'lazy', name) or nixInfo(nil, 'plugins', 'start', name)
+  end
+end
+nixInfo.lze.register_handlers {
+  {
+    spec_field = 'pack',
+    set_lazy = false,
+    modify = function(plugin)
+      if type(plugin[1]) ~= 'string' then
+        local name = nil
+        if type(plugin.name) == 'string' then
+          name = plugin.name
+        elseif type(plugin.pack) == 'string' then
+          name = vim.fs.basename(plugin.pack)
+        elseif type(plugin.pack) == 'table' then
+          if type(plugin.pack.name) == 'string' then
+            name = plugin.pack.name
+          elseif type(plugin.pack.src) == 'string' then
+            name = vim.fs.basename(plugin.pack.src)
+          end
+        end
+        plugin[1] = name
+      end
 
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
+      if not nixInfo.isNix then
+        local old_before = plugin.before
+        plugin.before = function(x)
+          vim.pack.add({ plugin.pack }, { confirm = true })
+          if type(old_before) == 'function' then
+            old_before(x)
+          end
+        end
+      end
 
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
--- NOTE: nixCats: this just gives nixCats global command a default value
--- so that it doesnt throw an error if you didn't install via nix.
--- usage of both this setup and the nixCats command is optional,
--- but it is very useful for passing info from nix to lua so you will likely use it at least once.
-local catUtils = require 'nixCatsUtils'
-catUtils.setup {
-  non_nix_value = true,
+      return plugin
+    end,
+  },
+  {
+    -- adds an `auto_enable` field to lze specs
+    -- if true, will disable it if not installed by nix.
+    -- if string, will disable if that name was not installed by nix.
+    -- if a table of strings, it will disable if any were not.
+    spec_field = 'auto_enable',
+    set_lazy = false,
+    modify = function(plugin)
+      if vim.g.nix_info_plugin_name then
+        if type(plugin.auto_enable) == 'table' then
+          for _, name in pairs(plugin.auto_enable) do
+            if not nixInfo.get_nix_plugin_path(name) then
+              plugin.enabled = false
+              break
+            end
+          end
+        elseif type(plugin.auto_enable) == 'string' then
+          if not nixInfo.get_nix_plugin_path(plugin.auto_enable) then
+            plugin.enabled = false
+          end
+        elseif type(plugin.auto_enable) == 'boolean' and plugin.auto_enable then
+          if not nixInfo.get_nix_plugin_path(plugin.name) then
+            plugin.enabled = false
+          end
+        end
+      end
+      return plugin
+    end,
+  },
+  {
+    -- we made an options.settings.cats with the value of enable for our top level specs
+    -- give for_cat = "name" (or for_cat = { "name" "othername" }) to disable
+    -- if that one is not enabled
+    spec_field = 'for_cat',
+    set_lazy = false,
+    modify = function(plugin)
+      if vim.g.nix_info_plugin_name then
+        if type(plugin.for_cat) == 'string' then
+          plugin.enabled = nixInfo(false, 'settings', 'cats', plugin.for_cat)
+        elseif vim.islist(plugin.for_cat) then
+          for _, cat in ipairs(plugin.for_cat) do
+            if nixInfo(false, 'settings', 'cats', cat) then
+              plugin.enabled = true
+              break
+            end
+          end
+        end
+      end
+      return plugin
+    end,
+  },
+  -- From lzextras. This one makes it so that
+  -- you can set up lsps within lze specs,
+  -- and trigger lspconfig setup hooks only on the correct filetypes
+  -- It is (unfortunately) important that it be registered after the above 2,
+  -- as it also relies on the modify hook, and the value of enabled at that point
+  nixInfo.lze.lsp,
 }
+
+-- NOTE: This config uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
+-- Because we have the paths, we can set a more performant fallback function
+-- for when you don't provide a filetype to trigger on yourself.
+-- If you do provide a filetype, this will never be called.
+nixInfo.lze.h.lsp.set_ft_fallback(function(name)
+  local lspcfg = nixInfo.get_nix_plugin_path 'nvim-lspconfig'
+  if lspcfg then
+    local ok, cfg = pcall(dofile, lspcfg .. '/lsp/' .. name .. '.lua')
+    return (ok and cfg or {}).filetypes or {}
+  else
+    -- the less performant thing we are trying to avoid at startup
+    return (vim.lsp.config[name] or {}).filetypes or {}
+  end
+end)
 
 require 'settings'
 require 'filetypes'
@@ -99,60 +150,10 @@ require 'keymaps'
 require 'autocommands'
 require 'commands'
 
--- NOTE: nixCats: You might want to move the lazy-lock.json file
-local function getlockfilepath()
-  if catUtils.isNixCats and type(nixCats.settings.unwrappedCfgPath) == 'string' then
-    return nixCats.settings.unwrappedCfgPath .. '/lazy-lock.json'
-  else
-    return vim.fn.stdpath 'config' .. '/lazy-lock.json'
-  end
-end
-
-local lazyOptions = {
-  lockfile = getlockfilepath(),
-  install = {
-    missing = not catUtils.isNixCats,
-  },
-  rocks = {
-    hererocks = false,
-  },
-  ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
+vim.g.lze = {
+  load = require('lzextras').loaders.debug_load,
 }
 
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
--- NOTE: nixCats: this the lazy wrapper. Use it like require('lazy').setup() but with an extra
--- argument, the path to lazy.nvim as downloaded by nix, or nil, before the normal arguments.
-require('nixCatsUtils.lazyCat').setup(nixCats.pawsible { 'allPlugins', 'start', 'lazy.nvim' }, {
+nixInfo.lze.load {
   { import = 'plugins' },
-}, lazyOptions)
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+}

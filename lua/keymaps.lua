@@ -192,6 +192,32 @@ map('n', '<C-w>/', function()
 end)
 map('x', '/', '<esc>/\\%V') -- `:h /\%V`
 
+map({ 'v', 'x', 'n' }, '<leader>y', '"+y', {
+  noremap = true,
+  silent = true,
+  desc = 'Yank to clipboard',
+})
+map({ 'n', 'v', 'x' }, '<leader>Y', '"+yy', {
+  noremap = true,
+  silent = true,
+  desc = 'Yank line to clipboard',
+})
+map({ 'n', 'v', 'x' }, '<leader>p', '"+p', {
+  noremap = true,
+  silent = true,
+  desc = 'Paste from clipboard',
+})
+map('i', '<C-p>', '<C-r><C-p>+', {
+  noremap = true,
+  silent = true,
+  desc = 'Paste from clipboard from within insert mode',
+})
+map('x', '<leader>P', '"_dP', {
+  noremap = true,
+  silent = true,
+  desc = 'Paste over selection without erasing unnamed register',
+})
+
 local jj_keys = function()
   ---@param cmd string
   local function jj(cmd)

@@ -5,9 +5,9 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
--- NOTE: nixCats: we asked nix if we have it instead of setting it here.
+-- NOTE: we asked nix if we have it instead of setting it here.
 -- because nix is more likely to know if we have a nerd font or not.
-vim.g.have_nerd_font = nixCats 'have_nerd_font'
+vim.g.have_nerd_font = nixInfo(true, 'settings', 'have_nerd_font')
 
 vim.g.markdown_recommended_style = 0
 
@@ -17,7 +17,7 @@ vim.g.markdown_recommended_style = 0
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.opt.number = not nixCats 'narrow_screen'
+vim.opt.number = not nixInfo(false, 'settings', 'narrow_screen')
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true
@@ -31,7 +31,10 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
+-- Schedule the setting because it can increase startup time.
+vim.schedule(function()
+  vim.opt.clipboard = 'unnamedplus'
+end)
 
 -- Save undo history
 vim.opt.undofile = true
@@ -42,7 +45,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = nixCats 'narrow_screen' and 'no' or 'yes'
+vim.opt.signcolumn = nixInfo(false, 'settings', 'narrow_screen') and 'no' or 'yes'
 
 -- Decrease update time
 vim.opt.updatetime = 250
@@ -83,7 +86,7 @@ vim.opt.confirm = true
 -- Enable break indent
 vim.opt.breakindent = true
 -- Word-wrap
-vim.opt.wrap = not nixCats 'narrow_screen'
+vim.opt.wrap = not nixInfo(false, 'narrow_screen')
 vim.opt.linebreak = true
 
 vim.opt.title = true

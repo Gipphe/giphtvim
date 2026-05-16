@@ -1,12 +1,12 @@
 return {
-  enabled = nixCats 'nix',
+  enabled = nixInfo(false, 'settings', 'cats', 'nix'),
   settings = {
     nixpkgs = {
-      expr = nixCats.extra 'nixd.nixpkgs' or 'import <nixpkgs> { }',
+      expr = nixInfo('import <nixpkgs> {}', 'settings', 'nixd', 'nixpkgs', 'expr'),
     },
     formatting = {
       command = { 'nixfmt' },
     },
-    options = nixCats.extra 'nixd.options' or {},
+    options = nixInfo({}, 'settings', 'nixd', 'options'),
   },
 }

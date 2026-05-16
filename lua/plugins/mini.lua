@@ -1,55 +1,70 @@
+local util = require 'util'
 local keys = require 'keygroups'
 local mini_augroup = vim.api.nvim_create_augroup('mini', { clear = true })
 
 return {
   {
-    'nvim-mini/mini.ai',
-    version = false,
-    opts = {
-      n_lines = 500,
+    'mini.ai',
+    pack = {
+      src = util.gh 'nvim-mini/mini.ai',
     },
+    after = function()
+      require('mini.ai').setup {
+        n_lines = 500,
+      }
+    end,
   },
 
   {
-    'nvim-mini/mini.surround',
-    version = false,
+    'mini.surround',
+    pack = {
+      src = util.gh 'nvim-mini/mini.surround',
+    },
     event = 'BufReadPost',
-    opts = {
-      mappings = {
-        add = keys.key.surround 'a',
-        delete = keys.key.surround 'd',
-        find = keys.key.surround 'f',
-        find_left = keys.key.surround 'F',
-        highlight = keys.key.surround 'h',
-        replace = keys.key.surround 'r',
-        update_n_lines = keys.key.surround 'n',
-      },
-    },
+    after = function()
+      local opts = {
+        mappings = {
+          add = keys.key.surround 'a',
+          delete = keys.key.surround 'd',
+          find = keys.key.surround 'f',
+          find_left = keys.key.surround 'F',
+          highlight = keys.key.surround 'h',
+          replace = keys.key.surround 'r',
+          update_n_lines = keys.key.surround 'n',
+        },
+      }
+      require('mini.surround').setup(opts)
+    end,
   },
 
   {
-    'nvim-mini/mini.comment',
-    version = false,
-    dependencies = {
-      'JoosepAlviste/nvim-ts-context-commentstring',
+    'mini.comment',
+    pack = {
+      src = util.gh 'nvim-mini/mini.comment',
     },
-    opts = {
-      options = {
-        custom_commentstring = function()
-          return require('ts_context_commentstring.internal').calculate_commentstring() or vim.bo.commentstring
-        end,
-      },
-    },
+    after = function()
+      require('mini.comment').setup {
+        options = {
+          custom_commentstring = function()
+            return require('ts_context_commentstring.internal').calculate_commentstring() or vim.bo.commentstring
+          end,
+        },
+      }
+    end,
   },
 
   {
-    'nvim-mini/mini.bufremove',
-    version = false,
-    opts = {},
+    'mini.bufremove',
+    pack = {
+      src = util.gh 'nvim-mini/mini.bufremove',
+    },
+    after = function()
+      require('mini.bufremove').setup {}
+    end,
     keys = {
       {
-        keys.key.buffer 'd',
-        function()
+        lhs = keys.key.buffer 'd',
+        rhs = function()
           local bd = require('mini.bufremove').delete
           if vim.bo.modified then
             local choice = vim.fn.confirm(('Save changes to %q?'):format(vim.fn.bufname()), '&Yes\n&No\n&Cancel')
@@ -66,8 +81,8 @@ return {
         desc = 'Delete buffer',
       },
       {
-        keys.key.buffer 'D',
-        function()
+        lhs = keys.key.buffer 'D',
+        rhs = function()
           require('mini.bufremove').delete(0, true)
         end,
         desc = 'Delete buffer (force)',
@@ -76,11 +91,12 @@ return {
   },
 
   {
-    'nvim-mini/mini.indentscope',
-    version = false,
-    opts = {},
-    config = function(_, opts)
-      require('mini.indentscope').setup(opts)
+    'mini.indentscope',
+    pack = {
+      src = util.gh 'nvim-mini/mini.indentscope',
+    },
+    after = function()
+      require('mini.indentscope').setup {}
 
       vim.api.nvim_create_autocmd('FileType', {
         group = mini_augroup,
@@ -105,12 +121,14 @@ return {
   },
 
   {
-    'nvim-mini/mini.statusline',
-    version = false,
-    opts = {
-      use_icons = vim.g.have_nerd_font,
+    'mini.statusline',
+    pack = {
+      src = util.gh 'nvim-mini/mini.statusline',
     },
-    config = function(_, opts)
+    after = function()
+      local opts = {
+        use_icons = vim.g.have_nerd_font,
+      }
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin

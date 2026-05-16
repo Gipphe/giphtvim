@@ -1,104 +1,22 @@
-local catUtils = require 'nixCatsUtils'
+local util = require 'util'
+
 return {
   {
-    'andymass/vim-matchup',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
+    'nvim-treesitter',
+    pack = {
+      src = util.gh 'nvim-treesitter/nvim-treesitter',
+      version = 'main',
     },
-    event = 'BufReadPre',
-    opts = {
-      treesitter = {
-        stopline = 500,
-      },
-      matchparen = {
-        offscreen = {
-          method = 'popup',
-        },
-      },
-    },
-  },
-
-  {
-    'windwp/nvim-ts-autotag',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    opts = {},
     lazy = false,
-  },
-
-  {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    opts = {
-      enable_autocmd = false,
-    },
-    init = function()
-      vim.g.skip_ts_context_commentstring_module = true
+    before = function()
+      util.pack.onInstallOrUpdate('nvim-treesitter', function()
+        vim.cmd [[:TSUpdate]]
+      end)
     end,
-  },
-
-  {
-    'nvim-treesitter/nvim-treesitter-context',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    opts = {
-      mode = 'cursor',
-      max_lines = 3,
-    },
-  },
-
-  {
-    'MeanderingProgrammer/treesitter-modules.nvim',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    ---@module 'treesitter-modules'
-    ---@type ts.mod.UserConfig
-    opts = {
-      -- TODO: Uncomment these lines once the nixpkgs-provided grammars work
-      -- correctly.
-      --
-      -- ensure_installed = require('nixCatsUtils').whenNotNixCatsElse { 'stable' },
-      -- auto_install = not require('nixCatsUtils').isNixCats,
-      ensure_installed = { 'stable' },
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = {
-        enable = true,
-        disable = { 'ruby' },
-      },
-      fold = { enable = true },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = '<C-space>',
-          node_incremental = '<C-space>',
-          scope_incremental = false,
-          node_decremental = '<bs>',
-        },
-      },
-    },
-  },
-
-  {
-    'nvim-treesitter/nvim-treesitter',
-    -- dependencies = {
-    --   -- TODO: Find replacement for nvim-treesitter main branch
-    --   -- 'nvim-treesitter/nvim-treesitter-refactor',
-    -- },
-    branch = 'main',
-    lazy = false,
-    build = catUtils.lazyAdd ':TSUpdate',
-    opts = {
-      install_dir = vim.fn.stdpath 'data' .. '/site',
-    },
-    keys = {
-      -- TODO: Find nvim-treesitter main branch equivalent
-      -- { '<leader>ut', '<cmd>TSContextToggle<cr>', desc = 'Toggle Treesitter context' },
-    },
-    config = function(_, opts)
+    after = function()
+      local opts = {
+        install_dir = vim.fn.stdpath 'data' .. '/site',
+      }
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
       -- NOTE: We use the `main` branch of nvim-treesitter, and thus have to take
       -- care with which options we use when following published guides and
@@ -122,6 +40,113 @@ return {
         -- pressing AltGr+Space on Linux. Code usually doesn't like it though.
         command = "call matchadd('BreakSpaceChar', ' ')",
       })
+    end,
+  },
+
+  {
+    'vim-matchup',
+    pack = {
+      src = util.gh 'andymass/vim-matchup',
+    },
+    event = 'BufReadPre',
+    after = function()
+      local opts = {
+        treesitter = {
+          stopline = 500,
+        },
+        matchparen = {
+          offscreen = {
+            method = 'popup',
+          },
+        },
+      }
+      require('match-up').setup(opts)
+    end,
+  },
+
+  {
+    'nvim-ts-autotag',
+    pack = {
+      src = util.gh 'windwp/nvim-ts-autotag',
+    },
+    lazy = false,
+    after = function()
+      require('nvim-ts-autotag').setup {}
+    end,
+  },
+
+  {
+    'nvim-ts-context-commentstring',
+    pack = {
+      src = util.gh 'JoosepAlviste/nvim-ts-context-commentstring',
+    },
+    event = 'BufReadPre',
+    after = function()
+      vim.g.skip_ts_context_commentstring_module = true
+      local opts = {
+        enable_autocmd = false,
+      }
+      require('ts_context_commentstring').setup(opts)
+    end,
+  },
+
+  {
+    'nvim-treesitter-context',
+    pack = {
+      src = util.gh 'nvim-treesitter/nvim-treesitter-context',
+    },
+    event = 'BufReadPost',
+    after = function()
+      local opts = {
+        mode = 'cursor',
+        max_lines = 3,
+      }
+      require('treesitter-context').setup(opts)
+    end,
+  },
+
+  {
+    'treesitter-modules.nvim',
+    pack = {
+      src = util.gh 'MeanderingProgrammer/treesitter-modules.nvim',
+    },
+    lazy = false,
+    -- Load after nvim-treesitter
+    priority = 10,
+    after = function()
+      ---@module 'treesitter-modules'
+      ---@type ts.mod.UserConfig
+      local opts = {
+        -- TODO: Uncomment these lines once the nixpkgs-provided grammars work
+        -- correctly.
+        --
+        -- ensure_installed = not nixInfo.isNix and { 'stable' } or nil,
+        -- auto_install = not nixInfo.isNix,
+        ensure_installed = { 'stable' },
+        auto_install = true,
+        highlight = {
+          enable = true,
+          -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+          --  If you are experiencing weird indenting issues, add the language to
+          --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+          additional_vim_regex_highlighting = { 'ruby' },
+        },
+        indent = {
+          enable = true,
+          disable = { 'ruby' },
+        },
+        fold = { enable = true },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = '<C-space>',
+            node_incremental = '<C-space>',
+            scope_incremental = false,
+            node_decremental = '<bs>',
+          },
+        },
+      }
+      require('treesitter-modules').setup(opts)
     end,
   },
 }

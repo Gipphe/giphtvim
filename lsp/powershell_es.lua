@@ -1,8 +1,7 @@
-local catUtils = require 'nixCatsUtils'
 local settings = {
-  enabled = nixCats 'powershell',
+  enabled = nixInfo(false, 'settings', 'cats', 'powershell'),
 }
-if catUtils.isNixCats then
-  settings.bundle_path = catUtils.getCatOrDefault('powershell_es', '') .. '/lib/powershell-editor-services'
+if nixInfo.isNix then
+  settings.bundle_path = nixInfo('', 'info', 'powershell_es') .. '/lib/powershell-editor-services'
 end
 return settings

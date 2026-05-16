@@ -1,5 +1,5 @@
 return {
-  enabled = nixCats 'lua',
+  enabled = nixInfo(false, 'settings', 'cats', 'lua'),
   settings = {
     Lua = {
       completion = {
@@ -7,7 +7,7 @@ return {
       },
       -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
       diagnostics = {
-        globals = { 'nixCats' },
+        globals = { 'nixInfo' },
         disable = { 'missing-fields' },
       },
     },

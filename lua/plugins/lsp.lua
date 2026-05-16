@@ -1,86 +1,173 @@
+local util = require 'util'
 local keys = require 'keygroups'
-local catUtils = require 'nixCatsUtils'
+
 return {
-  { -- LSP Configuration & Plugins
-    'neovim/nvim-lspconfig',
-    enabled = catUtils.cat('lsp', false),
-
-    -- lspconfig {{{
-    -- Enable the following language servers
-    --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-    --
-    --  Add any additional override configuration in the following tables. Available keys are:
-    --  - cmd (table): Override the default command used to start the server
-    --  - filetypes (table): Override the default list of associated filetypes for the server
-    --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-    --  - settings (table): Override the default settings passed when initializing the server.
-    --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-    -- NOTE: nixCats: there is help in nixCats for lsps at `:h nixCats.LSPs` and also `:h nixCats.luaUtils`
-    --
-    -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
-    --
-    -- Some languages (like typescript) have entire language plugins that can be useful:
-    --    https://github.com/pmizio/typescript-tools.nvim
-    -- }}}
-    opts = {
-      category_servers = {
-        elm = 'elmls',
-        nix = { 'nil', catUtils.whenNixCatsElse('nixd', 'rnix') },
-        powershell = 'powershell_es',
-        bash = 'bashls',
-        json = 'jsonls',
-        html = 'html',
-        js = { 'eslint', 'tailwindcss' },
-        ts = { 'eslint', 'taildinwcss', 'ts_ls', 'denols' },
-        fish = 'fish_lsp',
-        terraform = 'terraformls',
-        yaml = 'yamlls',
-        markdown = 'marksman',
-        python = 'ruff',
-        lua = 'lua_ls',
-        docker = 'dockerls',
-        qml = 'qmlls',
-        xml = 'lemminx',
-        go = 'gopls',
-        sql = 'sqls',
-        rust = 'rust_analyzer',
-      },
+  {
+    'haskell-tools.nvim',
+    pack = {
+      src = util.gh 'mrcjkb/haskell-tools.nvim',
+      version = vim.version.range '^6',
     },
-    dependencies = {
-      {
-        -- Automatically install LSPs and related tools to stdpath for Neovim
-        'williamboman/mason.nvim',
-        -- NOTE: nixCats: only enable mason if nix wasn't involved.
-        -- because we will be using nix to download things instead.
-        enabled = not catUtils.isNixCats,
-        opts = {},
-      }, -- NOTE: Must be loaded before dependants
+    enabled = nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'haskell'),
+    lazy = false,
+    after = function()
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('haskell-tools', { clear = true }),
+        pattern = { 'haskell' },
+        callback = function(buffer)
+          local ht = require 'haskell-tools'
+          local lmap = function(mode, l, r, desc)
+            vim.keymap.set(mode, l, r, {
+              noremap = true,
+              silent = true,
+              buffer = buffer.buf,
+              desc = desc,
+            })
+          end
+          local cmap = function(mode, l, r, desc)
+            lmap(mode, keys.key.code(l), r, desc)
+          end
+          cmap('n', 'l', vim.lsp.codelens.run, 'Run codelens')
+          cmap('n', 'hs', ht.hoogle.hoogle_signature, 'Hoogle search type signature under cursor')
+          cmap('n', 'ea', ht.lsp.buf_eval_all, 'Evaluate all code snippets')
+          cmap('n', 'pr', ht.repl.toggle, 'Toggle GHCi repl for the current package')
+          cmap('n', 'pR', function()
+            ht.repl.toggle(vim.api.nvim_buf_get_name(0))
+          end, 'Toggle GHCi repl for current buffer')
+          cmap('n', 'pq', ht.repl.quit, 'Close GHCi repl')
+        end,
+      })
+    end,
+  },
 
-      {
-        'williamboman/mason-lspconfig.nvim',
-        -- NOTE: nixCats: only enable mason if nix wasn't involved.
-        -- because we will be using nix to download things instead.
-        enabled = not catUtils.isNixCats,
-      },
-
-      {
-        'WhoIsSethDaniel/mason-tool-installer.nvim',
-        -- NOTE: nixCats: only enable mason if nix wasn't involved.
-        -- because we will be using nix to download things instead.
-        enabled = not catUtils.isNixCats,
-      },
-      -- Useful status updates for LSP.
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      {
-        'j-hui/fidget.nvim',
-        ---@type table See |fidget-options| or |fidget-option.txt|.
-        opts = {},
-      },
-      'folke/lazydev.nvim',
-      'saghen/blink.cmp',
+  {
+    'otter.nvim',
+    pack = {
+      src = util.gh 'jmbuhr/otter.nvim',
     },
+    enabled = nixInfo(false, 'settings', 'cats', 'lsp'),
+    after = function()
+      require('otter').setup {
+        handle_leading_whitespace = true,
+      }
+    end,
+  },
 
-    config = function(_, opts)
+  {
+    'yuck.nvim',
+    pack = {
+      src = util.gh 'elkowar/yuck.vim',
+    },
+    enabled = nixInfo(false, 'settings', 'cats', 'yuck'),
+    ft = { 'yuck' },
+  },
+
+  {
+    'pnpm.nvim',
+    pack = {
+      src = util.gh 'lukahartwig/pnpm.nvim',
+    },
+    enabled = nixInfo(false, 'settings', 'cats', 'js') or nixInfo(false, 'settings', 'cats', 'ts'),
+    ft = { 'js', 'ts', 'tsx', 'jsx' },
+  },
+
+  {
+    'vim-go',
+    pack = {
+      src = util.gh 'fatih/vim-go',
+    },
+    enabled = nixInfo(false, 'settings', 'cats', 'go'),
+    ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },
+    after = function()
+      vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufWinEnter', 'BufWritePre' }, {
+        group = vim.api.nvim_create_augroup('gotmpl_syntax', { clear = true }),
+        pattern = '*.gohtml,*.gotmpl,*.html',
+        callback = function(event)
+          if vim.fn.search('{{.\\+}}', 'nw') ~= 0 then
+            vim.api.nvim_set_option_value('filetype', 'gohtmltmpl', { buf = event.buf })
+          end
+        end,
+      })
+    end,
+  },
+
+  {
+    'mason.nvim',
+    pack = {
+      src = util.gh 'williamboman/mason.nvim',
+    },
+    -- NOTE: only enable mason if nix wasn't involved. because we will be using
+    -- nix to download things instead.
+    enabled = not nixInfo.isNix,
+    priority = 100,
+    on_plugin = { 'nvim-lspconfig' },
+    after = function()
+      require('mason').setup {}
+    end,
+  },
+
+  {
+    'mason-lspconfig.nvim',
+    pack = {
+      src = util.gh 'williamboman/mason-lspconfig.nvim',
+    },
+    -- NOTE: only enable mason if nix wasn't involved.
+    -- because we will be using nix to download things instead.
+    enabled = not nixInfo.isNix,
+  },
+
+  {
+    'mason-tool-installer.nvim',
+    pack = {
+      src = util.gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
+    },
+    -- NOTE: only enable mason if nix wasn't involved.
+    -- because we will be using nix to download things instead.
+    enabled = not nixInfo.isNix,
+  },
+  -- Useful status updates for LSP.
+  -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
+  {
+    'fidget.nvim',
+    pack = {
+      src = util.gh 'j-hui/fidget.nvim',
+    },
+    after = function()
+      require('fidget').setup {}
+    end,
+  },
+
+  {
+    'nvim-lspconfig',
+    pack = {
+      src = util.gh 'neovim/nvim-lspconfig',
+    },
+    enabled = nixInfo(false, 'settings', 'cats', 'lsp'),
+    after = function()
+      local opts = {
+        category_servers = {
+          elm = 'elmls',
+          nix = { 'nil', nixInfo.isNix and 'nixd' or 'rnix' },
+          powershell = 'powershell_es',
+          bash = 'bashls',
+          json = 'jsonls',
+          html = 'html',
+          js = { 'eslint', 'tailwindcss' },
+          ts = { 'eslint', 'tailwindcss', 'ts_ls', 'denols' },
+          fish = 'fish_lsp',
+          terraform = 'terraformls',
+          yaml = 'yamlls',
+          markdown = 'marksman',
+          python = 'ruff',
+          lua = 'lua_ls',
+          docker = 'dockerls',
+          qml = 'qmlls',
+          xml = 'lemminx',
+          go = 'gopls',
+          sql = 'sqls',
+          rust = 'rust_analyzer',
+        },
+      }
       -- Remove default keybindings for LSP
       vim.keymap.del('n', 'grn')
       vim.keymap.del('n', 'gra')
@@ -146,7 +233,9 @@ return {
           end, { desc = 'Code action', buffer = event.buf })
 
           vim.keymap.set({ 'n', 'v' }, keys.key.code 'c', vim.lsp.codelens.run, { desc = 'Run codelens', buffer = event.buf })
-          vim.keymap.set('n', keys.key.code 'C', vim.lsp.codelens.refresh, { desc = 'Refresh & display codelens', buffer = event.buf })
+          vim.keymap.set('n', keys.key.code 'C', function()
+            vim.lsp.codelens.enable(true)
+          end, { desc = 'Refresh & display codelens', buffer = event.buf })
           vim.keymap.set('n', keys.key.code 'A', function()
             vim.lsp.buf.code_action {
               context = {
@@ -227,11 +316,13 @@ return {
 
       -- Append servers based on categories
       for cat, srvs in pairs(opts.category_servers) do
-        if catUtils.cat(cat, false) then
-          local srvs_list = srvs
+        if nixInfo(false, 'settings', 'cats', cat) then
+          local srvs_list = {}
           if type(srvs) == 'function' then
             srvs_list = srvs()
-          elseif type(srvs) ~= 'table' then
+          elseif type(srvs) == 'table' then
+            srvs_list = srvs
+          elseif type(srvs) == 'string' then
             srvs_list = { srvs }
           end
           for _, srv in pairs(srvs_list) do
@@ -241,13 +332,13 @@ return {
       end
       servers = vim.fn.uniq(vim.fn.sort(servers)) --[[@as string[] ]]
 
-      -- NOTE: nixCats: if nix, use vim.lsp instead of mason
-      -- You could MAKE it work, using lspsAndRuntimeDeps and sharedLibraries in nixCats
-      -- but don't... its not worth it. Just add the lsp to lspsAndRuntimeDeps.
-      if catUtils.isNixCats then
+      -- NOTE: if nix, use vim.lsp instead of mason. You could MAKE it work,
+      -- using lspsAndRuntimeDeps and sharedLibraries in nix but don't...
+      -- its not worth it. Just add the lsp to lspsAndRuntimeDeps.
+      if nixInfo.isNix then
         vim.lsp.enable(servers)
       else
-        -- NOTE: nixCats: and if no nix, do it the normal way
+        -- NOTE: and if no nix, do it the normal way
 
         -- Ensure the servers and tools above are installed
         --  To check the current status of installed tools and/or manually install
@@ -269,114 +360,28 @@ return {
     end,
   },
 
-  -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-  -- used for completion, annotations and signatures of Neovim apis
   {
-    'folke/lazydev.nvim',
-    enabled = catUtils.cat('lsp', false) and catUtils.cat('lua', false),
-    dependencies = {
+    'venv-selector.nvim',
+    pack = {
+      src = util.gh 'linux-cultist/venv-selector.nvim',
+    },
+    enabled = nixInfo(false, 'settings', 'cats', 'python'),
+    ft = 'python',
+    after = function()
+      ---@module 'venv-selector'
+      ---@type venv-selector.Settings
+      local opts = {
+        search = {},
+        options = {},
+      }
+      require('venv-selector').setup(opts)
+    end,
+    keys = {
       {
-        'saghen/blink.cmp',
-        opts = {
-          sources = {
-            default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
-            providers = {
-              lazydev = {
-                name = 'LazyDev',
-                module = 'lazydev.integrations.blink',
-                -- make lazydev completions top priority (see `:h blink.cmp`)
-                score_offset = 100,
-              },
-            },
-          },
-        },
+        lhs = keys.key.code 'v',
+        rhs = '<cmd>VenvSelect<cr>',
+        desc = 'Select VirtualEnv',
       },
     },
-    ft = 'lua',
-    ---@module 'lazydev'
-    ---@type lazydev.Config
-    opts = {
-      library = {
-        -- adds type hints for nixCats global
-        { path = (nixCats.nixCatsPath or '') .. '/lua', words = { 'nixCats' } },
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-      },
-    },
-  },
-
-  {
-    'mrcjkb/haskell-tools.nvim',
-    enabled = catUtils.cat('lsp', false) and catUtils.cat('haskell', false),
-    version = '^6',
-    lazy = false, -- This plugin is already lazy
-    config = function()
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('haskell-tools', { clear = true }),
-        pattern = { 'haskell' },
-        callback = function(buffer)
-          local ht = require 'haskell-tools'
-          local lmap = function(mode, l, r, desc)
-            vim.keymap.set(mode, l, r, {
-              noremap = true,
-              silent = true,
-              buffer = buffer.buf,
-              desc = desc,
-            })
-          end
-          local cmap = function(mode, l, r, desc)
-            lmap(mode, keys.key.code(l), r, desc)
-          end
-          cmap('n', 'l', vim.lsp.codelens.run, 'Run codelens')
-          cmap('n', 'hs', ht.hoogle.hoogle_signature, 'Hoogle search type signature under cursor')
-          cmap('n', 'ea', ht.lsp.buf_eval_all, 'Evaluate all code snippets')
-          cmap('n', 'pr', ht.repl.toggle, 'Toggle GHCi repl for the current package')
-          cmap('n', 'pR', function()
-            ht.repl.toggle(vim.api.nvim_buf_get_name(0))
-          end, 'Toggle GHCi repl for current buffer')
-          cmap('n', 'pq', ht.repl.quit, 'Close GHCi repl')
-        end,
-      })
-    end,
-    ft = { 'haskell' },
-  },
-
-  {
-    'jmbuhr/otter.nvim',
-    enabled = catUtils.cat('lsp', false),
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-    },
-    opts = {
-      handle_leading_whitespace = true,
-    },
-  },
-
-  {
-    'elkowar/yuck.vim',
-    enabled = catUtils.cat('yuck', false),
-    ft = { 'yuck' },
-  },
-
-  {
-    'lukahartwig/pnpm.nvim',
-    enabled = catUtils.cat('js', false) or catUtils.cat('ts', false),
-    ft = { 'js', 'ts', 'tsx', 'jsx' },
-  },
-
-  {
-    'fatih/vim-go',
-    enabled = catUtils.cat('go', false),
-    ft = { 'go', 'html', 'gotmpl', 'gohtmltmpl' },
-    config = function()
-      vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufWinEnter', 'BufWritePre' }, {
-        group = vim.api.nvim_create_augroup('gotmpl_syntax', { clear = true }),
-        pattern = '*.gohtml,*.gotmpl,*.html',
-        callback = function(event)
-          if vim.fn.search('{{.\\+}}', 'nw') ~= 0 then
-            vim.api.nvim_set_option_value('filetype', 'gohtmltmpl', { buf = event.buf })
-          end
-        end,
-      })
-    end,
   },
 }

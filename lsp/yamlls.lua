@@ -1,5 +1,5 @@
 return {
-  enabled = nixCats 'yaml',
+  enabled = nixInfo(false, 'settings', 'cats', 'yaml'),
   capabilities = {
     textDocument = {
       foldingRange = {
