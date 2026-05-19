@@ -1,5 +1,22 @@
 local M = {}
 
+---@param t table
+---@vararg string
+---@return table
+function M.omit(t, ...)
+  local keys = {}
+  for _, k in ipairs { ... } do
+    keys[k] = true
+  end
+  local result = {}
+  for k, v in pairs(t) do
+    if not keys[k] then
+      result[k] = v
+    end
+  end
+  return result
+end
+
 ---Merge tables using the specified behavior. Will concatenate integer-indexed
 ---tables (lists), unlike vim.tbl_deep_extend.
 ---@param behavior 'force'|'keep'|'error'
@@ -214,5 +231,24 @@ M.icons = {
     Variable = '󰀫 ',
   },
 }
+
+function M.gh(url)
+  return 'https://github.com/' .. url
+end
+
+M.pack = {}
+
+---@param name string
+---@param callback fun(ev: vim.api.keyset.create_autocmd.callback_args)
+function M.pack.onInstallOrUpdate(name, callback)
+  vim.api.nvim_create_autocmd('PackChanged', {
+    callback = function(ev)
+      local kind = ev.data.kind
+      if ev.data.spec.name == name and (kind == 'install' or kind == 'update') then
+        callback(ev)
+      end
+    end,
+  })
+end
 
 return M

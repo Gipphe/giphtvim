@@ -379,4 +379,23 @@ return {
       })
     end,
   },
+
+  {
+    'linux-cultist/venv-selector.nvim',
+    enabled = catUtils.cat('rich_editor', false),
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      'folke/snacks.nvim',
+    },
+    ft = 'python',
+    ---@module 'venv-selector'
+    ---@type venv-selector.Options
+    opts = {
+      search = {},
+      options = {},
+    },
+    keys = {
+      { keys.key.code 'v', '<cmd>VenvSelect<cr>', desc = 'Select VirtualEnv' },
+    },
+  },
 }

@@ -6,6 +6,14 @@ inputs:
   pkgs,
   ...
 }:
+let
+  inherit (inputs) self;
+  inherit (self.packages.${pkgs.stdenv.hostPlatform.system}.vimPlugins)
+    pnpm-nvim
+    marp-nvim
+    nvim-highlight-colors
+    ;
+in
 {
   imports = [ wlib.wrapperModules.neovim ];
   # NOTE: see the tips and tricks section or the bottom of this file + flake inputs to understand this value
@@ -19,55 +27,186 @@ inputs:
 
   # choose a directory for your config.
   config.settings.config_directory = ./.;
-  # you can also use an impure path!
-  # config.settings.config_directory = lib.generators.mkLuaInline "vim.fn.stdpath('config')";
-  # config.settings.config_directory = "/home/<USER>/.config/nvim";
-  # If you do that, it will not be provisioned by nix, but it will have normal reload for quick edits!
 
-  # If you want to install multiple neovim derivations via home.packages or environment.systemPackages
-  # in order to prevent path collisions:
+  config.hosts = {
+    python3.nvim-host.enable = true;
+    node.nvim-host.enable = true;
+  };
 
-  # set this to true:
-  # config.settings.dont_link = true;
+  config.specs.general = {
+    data =
+      builtins.attrValues {
+        inherit (pkgs.vimPlugins)
+          blink-cmp
+          bufferline-nvim
+          catppuccin-nvim
+          conform-nvim
+          gitsigns-nvim
+          guess-indent-nvim
+          lazy-nvim
+          luasnip
+          mini-ai
+          mini-bufremove
+          mini-comment
+          mini-indentscope
+          mini-statusline
+          mini-surround
+          nvim-autopairs
+          nvim-treesitter
+          nvim-treesitter-context
+          nvim-ts-autotag
+          nvim-ts-context-commentstring
+          nvim-web-devicons
+          oil-nvim
+          persistence-nvim
+          plenary-nvim
+          promise-async
+          snacks-nvim
+          treesitter-modules-nvim
+          undotree
+          vim-css-color
+          vim-matchup
+          which-key-nvim
+          wilder-nvim
+          zellij-nav-nvim
+          ;
+      }
+      ++ [ nvim-highlight-colors ];
 
-  # and make sure these dont share values:
-  # config.binName = "nvim";
-  # config.settings.aliases = [ ];
+    extraPackages =
+      builtins.attrValues {
+        inherit (pkgs)
+          codespell
+          fd
+          gcc # Required by tree-sitter
+          gzip # Required by tree-sitter
+          ripgrep
+          tree-sitter
+          universal-ctags
+          ;
+      }
+      ++ [
+        pkgs.haskellPackages.cabal-fmt
+        pkgs.stdenv.cc.cc
+        self.packages.${pkgs.stdenv.hostPlatform.system}.prettier-with-plugins
+      ];
+  };
 
-  # To add a wrapped $out/bin/${config.binName}-neovide to the resulting neovim derivation
-  # config.hosts.neovide.nvim-host.enable = true;
-
-  # You can declare your own options!
-  # options.settings.colorscheme = lib.mkOption {
-  #   type = lib.types.str;
-  #   default = "onedark_dark";
-  # };
-  # config.settings.colorscheme = "moonfly"; # <- just demonstrating that it is an option
-  # and grab it in lua with `require(vim.g.nix_info_plugin_name)("onedark_dark", "settings", "colorscheme") == "moonfly"`
-  # config.specs.colorscheme = {
-  #   lazy = true;
-  #   data = builtins.getAttr config.settings.colorscheme (
-  #     with pkgs.vimPlugins;
-  #     {
-  #       "onedark_dark" = onedarkpro-nvim;
-  #       "onedark_vivid" = onedarkpro-nvim;
-  #       "onedark" = onedarkpro-nvim;
-  #       "onelight" = onedarkpro-nvim;
-  #       "moonfly" = vim-moonfly-colors;
-  #     }
-  #   );
-  # };
-  # If you don't want the boilerplate of a whole option in settings, you could just pass stuff
-  # config.info.testvalue = {
-  #   some = "stuff";
-  #   goes = "here";
-  # };
-  # and grab it in lua with `require(vim.g.nix_info_plugin_name)(nil, "info", "testvalue", "some") == "stuff"`
-  # Tip: in your nvim command line run:
-  # `:lua require('lzextras').debug.display(require(vim.g.nix_info_plugin_name))`
-  # config.settings.anothertestvalue = {
-  #   settings = "can also accept freeform values";
-  # };
+  config.specs.bash.extraPackages = builtins.attrValues {
+    inherit (pkgs)
+      bash-language-server
+      shfmt
+      ;
+  };
+  config.specs.docker.extraPackages = [ pkgs.dockerfile-language-server ];
+  config.specs.fish.extraPackages = [ pkgs.fish-lsp ];
+  config.specs.go = {
+    data = [ pkgs.vimPlugins.vim-go ];
+    extraPackages = [ pkgs.gopls ];
+  };
+  config.specs.rich_ui.data = [ pkgs.vimPlugins.todo-comments-nvim ];
+  config.specs.rich_editor.data =
+    builtins.attrValues {
+      inherit (pkgs.vimPlugins)
+        flash-nvim
+        nvim-spectre
+        tiny-inline-diagnostic-nvim
+        trouble-nvim
+        venv-selector-nvim
+        vim-illuminate
+        ;
+    }
+    ++ [ marp-nvim ];
+  config.specs.xml.extraPackages = [ pkgs.lemminx ];
+  config.specs.lua = {
+    data = [ pkgs.vimPlugins.lazydev-nvim ];
+    extraPackages = builtins.attrValues {
+      inherit (pkgs)
+        lua-language-server
+        stylua
+        ;
+    };
+  };
+  config.specs.markdown = {
+    data = [ pkgs.vimPlugins.render-markdown-nvim ];
+    extraPackages = builtins.attrValues {
+      inherit (pkgs)
+        markdownlint-cli
+        marksman
+        ;
+    };
+  };
+  config.specs.terraform.extraPackages = builtins.attrValues {
+    inherit (pkgs)
+      opentofu
+      tofu-ls
+      terraform-ls
+      ;
+  };
+  config.specs.powershell.extraPackages = builtins.attrValues {
+    inherit (pkgs)
+      powershell
+      powershell-editor-services
+      ;
+  };
+  config.settings.powershell_es = lib.mkIf config.specs.powershell.enable "${pkgs.powershell-editor-services
+  }";
+  config.specs.python.extraPackages = [ pkgs.ruff ];
+  config.specs.rust.extraPackages = [ pkgs.rust-analyzer ];
+  config.specs.sql.extraPackages = [ pkgs.sqls ];
+  config.specs.js = {
+    data = [ pnpm-nvim ];
+    extraPackages = builtins.attrValues {
+      inherit (pkgs)
+        vscode-langservers-extracted
+        tailwindcss-language-server
+        ;
+    };
+  };
+  config.specs.ts = {
+    data = [ pnpm-nvim ];
+    extraPackages = builtins.attrValues {
+      inherit (pkgs)
+        vscode-langservers-extracted
+        tailwindcss-language-server
+        typescript-language-server
+        ;
+    };
+  };
+  config.specs.html.extraPackages = [ pkgs.vscode-langservers-extracted ];
+  config.specs.json.extraPackages = [ pkgs.vscode-langservers-extracted ];
+  config.specs.yaml.extraPackages = [ pkgs.yaml-language-server ];
+  config.specs.nix.extraPackages = builtins.attrValues {
+    inherit (pkgs)
+      nil
+      nix-doc
+      nixd
+      nixfmt
+      ;
+  };
+  config.specs.yuck = {
+    data = [ pkgs.vimPlugins.yuck-vim ];
+    extraPackages = [ pkgs.kdePackages.qtdeclarative ];
+  };
+  config.specs.elm.extraPackages = [ pkgs.elmPackages.elm-language-server ];
+  config.specs.haskell = {
+    data = [ pkgs.vimPlugins.haskell-tools-nvim ];
+    extraPackages = builtins.attrValues {
+      inherit (pkgs.haskellPackages)
+        fast-tags
+        fourmolu
+        haskell-language-server
+        hoogle
+        ;
+    };
+  };
+  config.specs.lsp.data = builtins.attrValues {
+    inherit (pkgs.vimPlugins)
+      fidget-nvim
+      nvim-lspconfig
+      otter-nvim
+      ;
+  };
 
   # If the defaults are fine, you can just provide the `.data` field
   # In this case, a list of specs, instead of a single plugin like above
@@ -94,76 +233,6 @@ inputs:
     }
   ];
 
-  # you can name these whatever you want.
-  config.specs.nix = {
-    data = null;
-    extraPackages = with pkgs; [
-      nixd
-      nixfmt
-    ];
-  };
-  # You can use the before and after fields to run them before or after other specs or spec of lists of specs
-  config.specs.lua = {
-    after = [ "general" ];
-    lazy = true;
-    data = with pkgs.vimPlugins; [
-      lazydev-nvim
-    ];
-    extraPackages = with pkgs; [
-      lua-language-server
-      stylua
-    ];
-  };
-
-  config.specs.general = {
-    # this would ensure any config included from nix in here will be ran after any provided by the `lze` spec
-    # If we provided any from within either spec, anyway
-    after = [ "lze" ];
-    # note we didn't have to specify the `lze` specs name, because it was a top level spec
-    extraPackages = with pkgs; [
-      lazygit
-      tree-sitter
-    ];
-    # this `lazy = true` definition will transfer to specs in the contained DAL, if there is one.
-    # This is because the definition of lazy in `config.specMods` checks `parentSpec.lazy or false`
-    # the submodule type for `config.specMods` gets `parentSpec` as a `specialArg`.
-    # you can define options like this too!
-    lazy = true;
-    # here we chose a DAL of plugins, but we can also pass a single plugin, or null
-    # plugins are of type wlib.types.stringable
-    data = with pkgs.vimPlugins; [
-      {
-        data = vim-sleuth;
-        # You can override defaults from the parent spec here
-        lazy = false;
-      }
-      snacks-nvim
-      nvim-lspconfig
-      nvim-surround
-      vim-startuptime
-      blink-cmp
-      blink-compat
-      cmp-cmdline
-      colorful-menu-nvim
-      lualine-nvim
-      gitsigns-nvim
-      which-key-nvim
-      fidget-nvim
-      nvim-lint
-      conform-nvim
-      nvim-treesitter-textobjects
-      # treesitter + grammars
-      nvim-treesitter.withAllGrammars
-      # This is for if you only want some of the grammars
-      # (nvim-treesitter.withPlugins (
-      #   plugins: with plugins; [
-      #     nix
-      #     lua
-      #   ]
-      # ))
-    ];
-  };
-
   # These are from the tips and tricks section of the neovim wrapper docs!
   # https://birdeehub.github.io/nix-wrapper-modules/neovim.html#tips-and-tricks
   # We could put these in another module and import them here instead!
@@ -173,13 +242,13 @@ inputs:
     {
       # When this module is ran in an inner list,
       # this will contain `config` of the parent spec
-      parentSpec ? null,
+      # parentSpec ? null,
       # and this will contain `options`
       # otherwise they will be `null`
-      parentOpts ? null,
-      parentName ? null,
+      # parentOpts ? null,
+      # parentName ? null,
       # and then config from this one, as normal
-      config,
+      # config,
       # and the other module arguments.
       ...
     }:
