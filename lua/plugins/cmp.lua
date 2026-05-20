@@ -132,12 +132,70 @@ return {
                 end,
               },
             },
-          },
-          sources = {
-            default = { 'lsp', 'path', 'snippets', 'buffer' },
-            providers = {
-              lsp = { fallbacks = {} },
+
+            accept = {
+              auto_brackets = {
+                -- Required for windwp/nvim-autopairs
+                -- https://github.com/Saghen/blink.cmp/discussions/157
+                enabled = true,
+              },
             },
+
+            -- Requires for nvim-highlight-colors
+            menu = {
+              draw = {
+                components = {
+                  kind_icon = {
+                    text = function(ctx)
+                      local icon = ctx.kind_icon
+                      if ctx.item.source_name == 'LSP' then
+                        local color_item = require('nvim-highlight-colors').format(ctx.item.documentation, { kind = ctx.kind })
+                        if color_item and color_item.abbr ~= '' then
+                          icon = color_item.abbr
+                        end
+                      end
+                      return icon .. ctx.icon_gap
+                    end,
+                    highlight = function(ctx)
+                      local highlight = 'BlinkCmpKind' .. ctx.kind
+                      if ctx.item.source_name == 'LSP' then
+                        local color_item = require('nvim-highlight-colors').format(ctx.item.documentation, { kind = ctx.kind })
+                        if color_item and color_item.abbr_hl_group then
+                          highlight = color_item.abbr_hl_group
+                        end
+                      end
+                      return highlight
+                    end,
+                  },
+                },
+              },
+            },
+          },
+          -- Conditionally add source configs for lazydev
+          sources = {
+            default = (function()
+              if nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'lua') then
+                return { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' }
+              else
+                return { 'lsp', 'path', 'snippets', 'buffer' }
+              end
+            end)(),
+            providers = (function()
+              local base = {
+                lsp = { fallbacks = {} },
+              }
+              if nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'lua') then
+                return vim.tbl_deep_extend('force', {}, base, {
+                  lazydev = {
+                    name = 'LazyDev',
+                    module = 'lazydev.integrations.blink',
+                    -- make lazydev completions top priority (see `:h blink.cmp`)
+                    score_offset = 100,
+                  },
+                })
+              end
+              return base
+            end)(),
           },
           snippets = { preset = 'luasnip' },
           -- Blink.cmp includes an optional, recommended rust fuzzy matcher,

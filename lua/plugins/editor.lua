@@ -1,6 +1,5 @@
 local util = require 'util'
 local keys = require 'keygroups'
-local catUtils = require 'nixCatsUtils'
 return {
   {
     src = util.gh 'folke/trouble.nvim',
@@ -274,181 +273,194 @@ return {
   },
 
   {
-    'RRethy/vim-illuminate',
-    enabled = nixCats 'rich_editor',
-    event = 'BufReadPre',
-    opts = {
-      delay = 200,
-      large_file_cutoff = 2000,
-      large_file_overrides = {
-        providers = { 'lsp' },
-      },
-      disable_keymaps = false,
-    },
-    config = function(_, opts)
-      require('illuminate').configure(opts)
-    end,
-    keys = {
-      {
-        keys.key.next ']',
-        function()
-          require('illuminate').goto_next_reference(false)
-        end,
-        desc = 'Go to next reference',
-      },
-      {
-        keys.key.prev '[',
-        function()
-          require('illuminate').goto_prev_reference(false)
-        end,
-        desc = 'Go to previous reference',
-      },
-      {
-        '[]',
-        function()
-          require('illuminate').textobj_select()
-        end,
-        desc = 'Select word for use as text-object',
+    src = util.gh 'RRethy/vim-illuminate',
+    name = 'illuminate',
+    enabled = nixInfo(false, 'settings', 'cats', 'rich_editor'),
+    data = {
+      event = 'BufReadPre',
+      after = function()
+        local opts = {
+          delay = 200,
+          large_file_cutoff = 2000,
+          large_file_overrides = {
+            providers = { 'lsp' },
+          },
+          disable_keymaps = false,
+        }
+        require('illuminate').configure(opts)
+      end,
+      keys = {
+        {
+          lhs = keys.key.next ']',
+          rhs = function()
+            require('illuminate').goto_next_reference(false)
+          end,
+          desc = 'Go to next reference',
+        },
+        {
+          lhs = keys.key.prev '[',
+          rhs = function()
+            require('illuminate').goto_prev_reference(false)
+          end,
+          desc = 'Go to previous reference',
+        },
+        {
+          lhs = '[]',
+          rhs = function()
+            require('illuminate').textobj_select()
+          end,
+          desc = 'Select word for use as text-object',
+        },
       },
     },
   },
 
   {
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        changedelete = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        untracked = { text = '+' },
-      },
-      -- signs = {
-      --   add = { text = '▎' },
-      --   change = { text = '▎' },
-      --   changedelete = { text = '▎' },
-      --   delete = { text = '' },
-      --   topdelete = { text = '' },
-      --   untracked = { text = '▎' },
-      -- },
-      on_attach = function(bufnr)
-        local gitsigns = require 'gitsigns'
+    src = util.gh 'lewis6991/gitsigns.nvim',
+    name = 'gitsigns',
+    data = {
+      lazy = false,
+      after = function()
+        local opts = {
+          signs = {
+            add = { text = '+' },
+            change = { text = '~' },
+            changedelete = { text = '~' },
+            delete = { text = '_' },
+            topdelete = { text = '‾' },
+            untracked = { text = '+' },
+          },
+          -- signs = {
+          --   add = { text = '▎' },
+          --   change = { text = '▎' },
+          --   changedelete = { text = '▎' },
+          --   delete = { text = '' },
+          --   topdelete = { text = '' },
+          --   untracked = { text = '▎' },
+          -- },
+          on_attach = function(bufnr)
+            local gitsigns = require 'gitsigns'
 
-        local function lmap(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
-        end
+            local function lmap(mode, l, r, desc)
+              vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
+            end
 
-        -- Navigation
-        lmap('n', keys.key.next 'c', function()
-          if vim.wo.diff then
-            vim.cmd.normal { keys.key.next 'c', bang = true }
-          else
-            ---@diagnostic disable-next-line: param-type-mismatch
-            gitsigns.nav_hunk 'next'
-          end
-        end, 'Go to next hunk')
+            -- Navigation
+            lmap('n', keys.key.next 'c', function()
+              if vim.wo.diff then
+                vim.cmd.normal { keys.key.next 'c', bang = true }
+              else
+                ---@diagnostic disable-next-line: param-type-mismatch
+                gitsigns.nav_hunk 'next'
+              end
+            end, 'Go to next hunk')
 
-        lmap('n', keys.key.prev 'c', function()
-          if vim.wo.diff then
-            vim.cmd.normal { keys.key.prev 'c', bang = true }
-          else
-            ---@diagnostic disable-next-line: param-type-mismatch
-            gitsigns.nav_hunk 'prev'
-          end
-        end, 'Go to previous hunk')
+            lmap('n', keys.key.prev 'c', function()
+              if vim.wo.diff then
+                vim.cmd.normal { keys.key.prev 'c', bang = true }
+              else
+                ---@diagnostic disable-next-line: param-type-mismatch
+                gitsigns.nav_hunk 'prev'
+              end
+            end, 'Go to previous hunk')
 
-        local gmap = function(mode, l, r, desc)
-          vim.keymap.set(mode, keys.key.git(l), r, { buffer = bufnr, desc = desc })
-        end
+            local gmap = function(mode, l, r, desc)
+              vim.keymap.set(mode, keys.key.git(l), r, { buffer = bufnr, desc = desc })
+            end
 
-        -- Actions
-        gmap('n', 's', gitsigns.stage_hunk, 'Stage hunk')
-        gmap('n', 'r', gitsigns.reset_hunk, 'Reset hunk')
+            -- Actions
+            gmap('n', 's', gitsigns.stage_hunk, 'Stage hunk')
+            gmap('n', 'r', gitsigns.reset_hunk, 'Reset hunk')
 
-        gmap('v', 's', function()
-          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, 'Stage selected lines')
+            gmap('v', 's', function()
+              gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+            end, 'Stage selected lines')
 
-        gmap('v', 'r', function()
-          gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, 'Reset selected lines')
+            gmap('v', 'r', function()
+              gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+            end, 'Reset selected lines')
 
-        gmap('n', 'S', gitsigns.stage_buffer, 'Stage buffer')
-        gmap('n', 'R', gitsigns.reset_buffer, 'Reset buffer')
-        gmap('n', 'p', gitsigns.preview_hunk, 'Preview hunk')
-        gmap('n', 'i', gitsigns.preview_hunk_inline, 'Preview hunk inline')
+            gmap('n', 'S', gitsigns.stage_buffer, 'Stage buffer')
+            gmap('n', 'R', gitsigns.reset_buffer, 'Reset buffer')
+            gmap('n', 'p', gitsigns.preview_hunk, 'Preview hunk')
+            gmap('n', 'i', gitsigns.preview_hunk_inline, 'Preview hunk inline')
 
-        gmap('n', 'b', function()
-          gitsigns.blame_line { full = true }
-        end, 'Blame current line')
+            gmap('n', 'b', function()
+              gitsigns.blame_line { full = true }
+            end, 'Blame current line')
 
-        gmap('n', 'd', gitsigns.diffthis, 'Vimdiff file')
+            gmap('n', 'd', gitsigns.diffthis, 'Vimdiff file')
 
-        gmap('n', 'D', function()
-          ---@diagnostic disable-next-line: param-type-mismatch
-          gitsigns.diffthis '~'
-        end, 'Vimdiff file against previous commit')
+            gmap('n', 'D', function()
+              ---@diagnostic disable-next-line: param-type-mismatch
+              gitsigns.diffthis '~'
+            end, 'Vimdiff file against previous commit')
 
-        gmap('n', 'Q', function()
-          ---@diagnostic disable-next-line: param-type-mismatch
-          gitsigns.setqflist 'all'
-        end, 'Open QuickFix list with all hunks in all files')
-        gmap('n', 'q', gitsigns.setqflist, 'Open QuickFix list with all hunks in current buffer')
+            gmap('n', 'Q', function()
+              ---@diagnostic disable-next-line: param-type-mismatch
+              gitsigns.setqflist 'all'
+            end, 'Open QuickFix list with all hunks in all files')
+            gmap('n', 'q', gitsigns.setqflist, 'Open QuickFix list with all hunks in current buffer')
 
-        -- Toggles
-        gmap('n', 'lb', gitsigns.toggle_current_line_blame, 'Toggle current line blame virtual text')
-        gmap('n', 'iw', gitsigns.toggle_word_diff, 'Highlight word diffs inline')
+            -- Toggles
+            gmap('n', 'lb', gitsigns.toggle_current_line_blame, 'Toggle current line blame virtual text')
+            gmap('n', 'iw', gitsigns.toggle_word_diff, 'Highlight word diffs inline')
 
-        -- Text object
-        lmap({ 'o', 'x' }, 'ih', gitsigns.select_hunk, 'Select hunk under cursor')
+            -- Text object
+            lmap({ 'o', 'x' }, 'ih', gitsigns.select_hunk, 'Select hunk under cursor')
+          end,
+        }
+        require('gitsigns').setup(opts)
       end,
     },
   },
 
   {
-    'rachartier/tiny-inline-diagnostic.nvim',
-    enabled = nixCats 'rich_editor',
-    event = 'VeryLazy',
-    priority = 1000,
-    config = function()
-      require('tiny-inline-diagnostic').setup()
-      vim.diagnostic.config { virtual_text = false }
-    end,
-  },
-
-  {
-    'windwp/nvim-autopairs',
-    dependencies = {
-      {
-        -- https://github.com/Saghen/blink.cmp/discussions/157
-        'saghen/blink.cmp',
-        opts = { completion = { accept = { auto_brackets = { enabled = true } } } },
-      },
-    },
-    event = 'InsertEnter',
-    opts = {
-      disable_filetype = { 'TelescopePrompt', 'vim' },
+    src = util.gh 'rachartier/tiny-inline-diagnostic.nvim',
+    name = 'tiny-inline-diagnostic',
+    enabled = nixInfo(false, 'settings', 'cats', 'rich_editor'),
+    data = {
+      event = 'BufRead',
+      after = function()
+        require('tiny-inline-diagnostic').setup()
+        vim.diagnostic.config { virtual_text = false }
+      end,
     },
   },
 
   {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons',
+    src = util.gh 'windwp/nvim-autopairs',
+    name = 'nvim-autopairs',
+    data = {
+      event = 'InsertEnter',
+      after = function()
+        local opts = {
+          disable_filetype = { 'TelescopePrompt', 'vim' },
+        }
+        require('nvim-autopairs').setup(opts)
+      end,
     },
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
-    opts = {},
-    ft = { 'markdown' },
-    keys = {
-      {
-        keys.key.ui 'm',
-        function()
-          require('render-markdown').set_buf()
-        end,
-        desc = 'Toggle Markdown rendering',
+  },
+
+  {
+    src = util.gh 'MeanderingProgrammer/render-markdown.nvim',
+    name = 'render-markdown',
+    data = {
+      after = function()
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        local opts = {}
+        require('render-markdown').setup(opts)
+      end,
+      ft = { 'markdown' },
+      keys = {
+        {
+          lhs = keys.key.ui 'm',
+          rhs = function()
+            require('render-markdown').set_buf()
+          end,
+          desc = 'Toggle Markdown rendering',
+        },
       },
     },
   },
