@@ -25,19 +25,88 @@
       inherit (nixpkgs) lib;
       forAllSystems = lib.genAttrs nixpkgs.lib.platforms.all;
       module = lib.modules.importApply ./module.nix inputs;
-      wrapper = wrappers.lib.evalModule module;
+      neovimModule = {
+        imports = [ module ];
+        cats = baseCats;
+        # specs = lib.mapAttrs (_: enabled: { inherit enabled; }) baseCats;
+      };
+      droidModule = {
+        imports = [ module ];
+        cats = droidCats;
+      };
+      neovimWrapper = wrappers.lib.evalModule neovimModule;
+      droidWrapper = wrappers.lib.evalModule droidModule;
+      baseCats = {
+        lsp = true;
+        rich_ui = true;
+        rich_editor = true;
+        narrow_screen = false;
+
+        bash = true;
+        docker = false;
+        elm = false;
+        fish = true;
+        go = false;
+        haskell = true;
+        html = true;
+        js = true;
+        lua = true;
+        markdown = true;
+        nix = true;
+        powershell = true;
+        python = true;
+        qml = false;
+        rust = true;
+        sql = true;
+        terraform = true;
+        ts = true;
+        xml = false;
+        yaml = true;
+        yuck = true;
+      };
+      droidCats = baseCats // {
+        lsp = false;
+        rich_ui = false;
+        rich_editor = false;
+        narrow_screen = true;
+
+        bash = false;
+        docker = false;
+        elm = false;
+        fish = false;
+        go = false;
+        haskell = false;
+        html = false;
+        js = false;
+        lua = false;
+        markdown = true;
+        nix = false;
+        powershell = false;
+        python = false;
+        qml = false;
+        rust = false;
+        sql = false;
+        terraform = false;
+        ts = false;
+        xml = false;
+        yaml = true;
+        yuck = false;
+      };
     in
     {
       wrapperModules = {
-        neovim = module;
+        neovim = neovimWrapper;
+        droid = droidWrapper;
         default = self.wrapperModules.neovim;
       };
       wrappers = {
-        neovim = wrapper.config;
+        neovim = neovimWrapper.config;
+        droid = droidWrapper.config;
         default = self.wrappers.neovim;
       };
       overlays = {
         neovim = final: prev: { neovim = self.wrappers.neovim.wrap { pkgs = final; }; };
+        droid = final: prev: { neovim = self.wrappers.droid.wrap { pkgs = final; }; };
         default = self.overlays.neovim;
       };
       packages = forAllSystems (
@@ -47,6 +116,7 @@
         in
         {
           neovim = self.wrappers.neovim.wrap { inherit pkgs; };
+          droid = self.wrappers.droid.wrap { inherit pkgs; };
           default = self.packages.${system}.neovim;
 
           prettier-with-plugins = pkgs.callPackage ./packages/prettier-with-plugins.nix { };
@@ -94,14 +164,19 @@
         }
       );
       nixosModules = {
-        neovim = wrappers.lig.getInstallModule {
+        neovim = wrappers.lib.getInstallModule {
           name = "neovim";
-          value = module;
+          value = neovimModule;
+        };
+        droid = wrappers.lib.getInstallModule {
+          name = "neovim";
+          value = droidModule;
         };
         default = self.nixosModules.neovim;
       };
       homeModules = {
         neovim = self.nixosModules.neovim;
+        droid = self.nixosModules.droid;
         default = self.homeModules.neovim;
       };
     };

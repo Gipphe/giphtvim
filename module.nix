@@ -24,6 +24,35 @@ in
     default = config.nvim-lib.pluginsFromPrefix "plugins-" inputs;
   };
 
+  options.cats = {
+    bash = lib.mkEnableOption "bash";
+    docker = lib.mkEnableOption "docker";
+    elm = lib.mkEnableOption "elm";
+    fish = lib.mkEnableOption "fish";
+    go = lib.mkEnableOption "go";
+    haskell = lib.mkEnableOption "haskell";
+    html = lib.mkEnableOption "html";
+    js = lib.mkEnableOption "js";
+    json = lib.mkEnableOption "json";
+    lsp = lib.mkEnableOption "lsp";
+    lua = lib.mkEnableOption "lua";
+    markdown = lib.mkEnableOption "markdown";
+    narrow_screen = lib.mkEnableOption "narrow_screen";
+    nix = lib.mkEnableOption "nix";
+    powershell = lib.mkEnableOption "powershell";
+    python = lib.mkEnableOption "python";
+    qml = lib.mkEnableOption "qml";
+    rich_editor = lib.mkEnableOption "rich_editor";
+    rich_ui = lib.mkEnableOption "rich_ui";
+    rust = lib.mkEnableOption "rust";
+    sql = lib.mkEnableOption "sql";
+    terraform = lib.mkEnableOption "terraform";
+    ts = lib.mkEnableOption "ts";
+    xml = lib.mkEnableOption "xml";
+    yaml = lib.mkEnableOption "yaml";
+    yuck = lib.mkEnableOption "yuck";
+  };
+
   # choose a directory for your config.
   config.settings.config_directory = ./.;
 
@@ -123,6 +152,7 @@ in
   };
 
   config.specs.bash = {
+    enable = config.cats.bash;
     data = null;
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -132,21 +162,26 @@ in
     };
   };
   config.specs.docker = {
+    enable = config.cats.docker;
     data = null;
     runtimePkgs = [ pkgs.dockerfile-language-server ];
   };
   config.specs.fish = {
+    enable = config.cats.fish;
     data = null;
     runtimePkgs = [ pkgs.fish-lsp ];
   };
   config.specs.go = {
+    enable = config.cats.go;
     data = [ pkgs.vimPlugins.vim-go ];
     runtimePkgs = [ pkgs.gopls ];
   };
   config.specs.rich_ui = {
+    enable = config.cats.rich_ui;
     data = [ pkgs.vimPlugins.todo-comments-nvim ];
   };
   config.specs.rich_editor = {
+    enable = config.cats.rich_editor;
     data = builtins.attrValues {
       inherit (pkgs.vimPlugins)
         flash-nvim
@@ -159,10 +194,12 @@ in
     };
   };
   config.specs.xml = {
+    enable = config.cats.xml;
     data = null;
     runtimePkgs = [ pkgs.lemminx ];
   };
   config.specs.lua = {
+    enable = config.cats.lua;
     data = [ pkgs.vimPlugins.lazydev-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -172,6 +209,7 @@ in
     };
   };
   config.specs.markdown = {
+    enable = config.cats.markdown;
     data = [ pkgs.vimPlugins.render-markdown-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -181,6 +219,7 @@ in
     };
   };
   config.specs.terraform = {
+    enable = config.cats.terraform;
     data = null;
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -191,6 +230,7 @@ in
     };
   };
   config.specs.powershell = {
+    enable = config.cats.powershell;
     data = null;
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -202,18 +242,22 @@ in
   config.info.powershell_es = lib.mkIf config.specs.powershell.enable "${pkgs.powershell-editor-services
   }";
   config.specs.python = {
+    enable = config.cats.python;
     data = null;
     runtimePkgs = [ pkgs.ruff ];
   };
   config.specs.rust = {
+    enable = config.cats.rust;
     data = null;
     runtimePkgs = [ pkgs.rust-analyzer ];
   };
   config.specs.sql = {
+    enable = config.cats.sql;
     data = null;
     runtimePkgs = [ pkgs.sqls ];
   };
   config.specs.js = {
+    enable = config.cats.js;
     data = [ pnpm-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -224,6 +268,7 @@ in
     };
   };
   config.specs.ts = {
+    enable = config.cats.ts;
     data = [ pnpm-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -235,18 +280,22 @@ in
     };
   };
   config.specs.html = {
+    enable = config.cats.html;
     data = null;
     runtimePkgs = [ pkgs.vscode-langservers-extracted ];
   };
   config.specs.json = {
+    enable = config.cats.json;
     data = null;
     runtimePkgs = [ pkgs.vscode-langservers-extracted ];
   };
   config.specs.yaml = {
+    enable = config.cats.yaml;
     data = null;
     runtimePkgs = [ pkgs.yaml-language-server ];
   };
   config.specs.nix = {
+    enable = config.cats.nix;
     data = null;
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
@@ -258,14 +307,17 @@ in
     };
   };
   config.specs.yuck = {
+    enable = config.cats.yuck;
     data = [ pkgs.vimPlugins.yuck-vim ];
     runtimePkgs = [ pkgs.kdePackages.qtdeclarative ];
   };
   config.specs.elm = {
+    enable = config.cats.elm;
     data = null;
     runtimePkgs = [ pkgs.elmPackages.elm-language-server ];
   };
   config.specs.haskell = {
+    enable = config.cats.haskell;
     data = [ pkgs.vimPlugins.haskell-tools-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs.haskellPackages)
@@ -276,12 +328,15 @@ in
         ;
     };
   };
-  config.specs.lsp.data = builtins.attrValues {
-    inherit (pkgs.vimPlugins)
-      fidget-nvim
-      nvim-lspconfig
-      otter-nvim
-      ;
+  config.specs.lsp = {
+    enable = config.cats.lsp;
+    data = builtins.attrValues {
+      inherit (pkgs.vimPlugins)
+        fidget-nvim
+        nvim-lspconfig
+        otter-nvim
+        ;
+    };
   };
 
   # These are from the tips and tricks section of the neovim wrapper docs!

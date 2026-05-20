@@ -129,6 +129,7 @@ return {
   -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
   {
     'fidget.nvim',
+    enabled = nixInfo(false, 'settings', 'cats', 'lsp'),
     pack = {
       src = util.gh 'j-hui/fidget.nvim',
     },

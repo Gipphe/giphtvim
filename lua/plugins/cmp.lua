@@ -6,7 +6,7 @@ return {
     pack = {
       src = util.gh 'L3MON4D3/LuaSnip',
     },
-    on_require = { 'luasnip' },
+    lazy = false,
     before = function()
       if nixInfo.isNix then
         return

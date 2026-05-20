@@ -63,8 +63,7 @@ return {
       'catppuccin',
     },
     after = function()
-      ---@type CatppuccinOptions
-      local opts = {
+      require('catppuccin').setup {
         flavour = 'macchiato',
         show_end_of_buffer = true,
         integrations = {
@@ -91,8 +90,6 @@ return {
           which_key = true,
         },
       }
-      local name = nixInfo.isNix and 'catppuccin' or 'catppuccin-nvim'
-      require(name).setup(opts)
     end,
   },
 
@@ -114,15 +111,15 @@ return {
     pack = {
       src = util.gh 'gelguy/wilder.nvim',
     },
+    lazy = false,
     after = function()
-      local opts = {
+      require('wilder').setup {
         modes = {
           '/',
           '?',
           ':',
         },
       }
-      require('wilder').setup(opts)
     end,
   },
 
