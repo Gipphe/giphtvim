@@ -58,6 +58,7 @@ return {
     pack = {
       src = util.gh 'nvim-mini/mini.bufremove',
     },
+    on_require = { 'mini.bufremove' },
     after = function()
       require('mini.bufremove').setup {}
     end,

@@ -9,26 +9,54 @@ return {
       src = util.gh 'akinsho/bufferline.nvim',
     },
     event = 'DeferredUIEnter',
-    keys = function(_, old_keys)
-      old_keys = old_keys or {}
-      local k = function(l, r, desc)
-        return { lhs = keys.key.buffer(l), rhs = r, desc = desc }
-      end
-      local new_keys = {
-        k('p', '<Cmd>BufferLineTogglePin<CR>', 'Toggle pin'),
-        k('P', '<Cmd>BufferLineGroupClose ungrouped<CR>', 'Delete non-pinned buffers'),
-        k('o', '<Cmd>BufferLineCloseOthers<CR>', 'Delete other buffers'),
-        k('r', '<Cmd>BufferLineCloseRight<CR>', 'Delete buffers to the right'),
-        k('l', '<Cmd>BufferLineCloseLeft<CR>', 'Delete buffers to the left'),
-        { '<S-h>', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev buffer' },
-        { '<S-l>', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
-      }
-      return util.flatten(old_keys, new_keys)
-    end,
+    cmd = {
+      'BufferLineTogglePin',
+      'BufferLineGroupClose',
+      'BufferLineCloseOthers',
+      'BufferLineCloseRight',
+      'BufferLineCloseLeft',
+      'BufferLineCyclePrev',
+      'BufferLineCycleNext',
+    },
+    keys = {
+      {
+        lhs = keys.key.buffer 'p',
+        rhs = '<Cmd>BufferLineTogglePin<CR>',
+        desc = 'Toggle pin',
+      },
+      {
+        lhs = keys.key.buffer 'P',
+        rhs = '<Cmd>BufferLineGroupClose ungrouped<CR>',
+        desc = 'Delete non-pinned buffers',
+      },
+      {
+        lhs = keys.key.buffer 'o',
+        rhs = '<Cmd>BufferLineCloseOthers<CR>',
+        desc = 'Delete other buffers',
+      },
+      {
+        lhs = keys.key.buffer 'r',
+        rhs = '<Cmd>BufferLineCloseRight<CR>',
+        desc = 'Delete buffers to the right',
+      },
+      {
+        lhs = keys.key.buffer 'l',
+        rhs = '<Cmd>BufferLineCloseLeft<CR>',
+        desc = 'Delete buffers to the left',
+      },
+      {
+        lhs = '<S-h>',
+        rhs = '<cmd>BufferLineCyclePrev<cr>',
+        desc = 'Prev buffer',
+      },
+      {
+        lhs = '<S-l>',
+        rhs = '<cmd>BufferLineCycleNext<cr>',
+        desc = 'Next buffer',
+      },
+    },
     after = function()
-      ---@module 'bufferline'
-      ---@type bufferline.UserConfig
-      local opts = {
+      require('bufferline').setup {
         options = {
           close_command = function(n)
             require('mini.bufremove').delete(n, false)
@@ -44,7 +72,6 @@ return {
           end,
         },
       }
-      require('bufferline').setup(opts)
     end,
   },
 
