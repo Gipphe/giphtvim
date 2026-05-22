@@ -37,32 +37,21 @@ return {
         delete_check_events = 'TextChanged',
       }
       require('luasnip').setup(opts)
-    end,
-    keys = {
-      {
-        lhs = '<tab>',
-        rhs = function()
-          return require('luasnip').jumpable(1) and '<Plug>luasnip-jump-next' or '<tab>'
-        end,
-        mode = 'i',
+
+      vim.keymap.set('i', '<tab>', function()
+        return require('luasnip').jumpable(1) and '<Plug>luasnip-jump-next' or '<tab>'
+      end, {
+        desc = 'Select next snippet',
         expr = true,
         silent = true,
-      },
-      {
-        lhs = '<tab>',
-        rhs = function()
-          return require('luasnip').jump(1)
-        end,
-        mode = 's',
-      },
-      {
-        lhs = '<S-tab>',
-        rhs = function()
-          return require('luasnip').jump(-1)
-        end,
-        mode = 's',
-      },
-    },
+      })
+      vim.keymap.set('s', '<tab>', function()
+        return require('luasnip').jump(1)
+      end, { desc = 'Select next snippet' })
+      vim.keymap.set('s', '<S-tab>', function()
+        return require('luasnip').jump(-1)
+      end, { desc = 'Select previous snippet' })
+    end,
   },
   {
     'blink.cmp',
