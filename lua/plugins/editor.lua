@@ -82,7 +82,7 @@ return {
     },
     enabled = nixInfo(false, 'settings', 'cats', 'rich_editor'),
     after = function()
-      require('nvim-spectre').setup {}
+      require('spectre').setup {}
     end,
     keys = {
       {
