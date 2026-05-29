@@ -13,6 +13,126 @@
       url = "github:BirdeeHub/lzextras";
       flake = false;
     };
+    plugins-blink-cmp = {
+      url = "github:saghen/blink.cmp";
+      flake = false;
+    };
+    plugins-bufferline-nvim = {
+      url = "github:akinsho/bufferline.nvim";
+      flake = false;
+    };
+    plugins-conform-nvim = {
+      url = "github:stevearc/conform.nvim";
+      flake = false;
+    };
+    plugins-gitsigns-nvim = {
+      url = "github:lewis6991/gitsigns.nvim";
+      flake = false;
+    };
+    plugins-guess-indent-nvim = {
+      url = "github:NMAC427/guess-indent.nvim";
+      flake = false;
+    };
+    plugins-luasnip = {
+      url = "github:L3MON4D3/LuaSnip";
+      flake = false;
+    };
+    plugins-mini-ai = {
+      url = "github:nvim-mini/mini.ai";
+      flake = false;
+    };
+    plugins-mini-bufremove = {
+      url = "github:nvim-mini/mini.bufremove";
+      flake = false;
+    };
+    plugins-mini-comment = {
+      url = "github:nvim-mini/mini.comment";
+      flake = false;
+    };
+    plugins-mini-indentscope = {
+      url = "github:nvim-mini/mini.indentscope";
+      flake = false;
+    };
+    plugins-mini-statusline = {
+      url = "github:nvim-mini/mini.statusline";
+      flake = false;
+    };
+    plugins-mini-surround = {
+      url = "github:nvim-mini/mini.surround";
+      flake = false;
+    };
+    plugins-nvim-autopairs = {
+      url = "github:windwp/nvim-autopairs";
+      flake = false;
+    };
+    plugins-nvim-treesitter = {
+      url = "github:nvim-treesitter/nvim-treesitter";
+      flake = false;
+    };
+    plugins-nvim-treesitter-context = {
+      url = "github:nvim-treesitter/nvim-treesitter-context";
+      flake = false;
+    };
+    plugins-nvim-ts-autotag = {
+      url = "github:windwp/nvim-ts-autotag";
+      flake = false;
+    };
+    plugins-nvim-ts-context-commentstring = {
+      url = "github:JoosepAlviste/nvim-ts-context-commentstring";
+      flake = false;
+    };
+    plugins-nvim-web-devicons = {
+      url = "github:nvim-tree/nvim-web-devicons";
+      flake = false;
+    };
+    plugins-oil-nvim = {
+      url = "github:stevearc/oil.nvim";
+      flake = false;
+    };
+    plugins-persistence-nvim = {
+      url = "github:folke/persistence.nvim";
+      flake = false;
+    };
+    plugins-plenary-nvim = {
+      url = "github:nvim-lua/plenary.nvim";
+      flake = false;
+    };
+    plugins-promise-async = {
+      url = "github:kevinhwang91/promise-async";
+      flake = false;
+    };
+    plugins-snacks-nvim = {
+      url = "github:folke/snacks.nvim";
+      flake = false;
+    };
+    plugins-treesitter-modules-nvim = {
+      url = "github:MeanderingProgrammer/treesitter-modules.nvim";
+      flake = false;
+    };
+    plugins-undotree = {
+      url = "github:mbbill/undotree";
+      flake = false;
+    };
+    plugins-vim-css-color = {
+      url = "github:ap/vim-css-color";
+      flake = false;
+    };
+    plugins-vim-matchup = {
+      url = "github:andymass/vim-matchup";
+      flake = false;
+    };
+    plugins-which-key-nvim = {
+      url = "github:folke/which-key.nvim";
+      flake = false;
+    };
+    plugins-wilder-nvim = {
+      url = "github:gelguy/wilder.nvim";
+      flake = false;
+    };
+    plugins-zellij-nav-nvim = {
+      url = "github:swaits/zellij-nav.nvim";
+      flake = false;
+    };
   };
   outputs =
     {

@@ -95,7 +95,7 @@ in
   config.specs.general = {
     data =
       builtins.attrValues {
-        inherit (pkgs.vimPlugins)
+        inherit (config.nvim-lib.neovimPlugins)
           blink-cmp
           bufferline-nvim
           conform-nvim
