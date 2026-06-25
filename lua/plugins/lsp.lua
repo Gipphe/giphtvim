@@ -6,7 +6,7 @@ return {
     'haskell-tools.nvim',
     pack = {
       src = util.gh 'mrcjkb/haskell-tools.nvim',
-      version = vim.version.range '^6',
+      version = vim.version.range '^10',
     },
     enabled = nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'haskell'),
     lazy = false,
