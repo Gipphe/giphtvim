@@ -320,7 +320,8 @@ in
   };
   config.specs.haskell = {
     enable = config.cats.haskell;
-    data = [ pkgs.vimPlugins.haskell-tools-nvim ];
+    data = null;
+    # data = [ pkgs.vimPlugins.haskell-tools-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs.haskellPackages)
         fast-tags
