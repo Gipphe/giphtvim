@@ -8,7 +8,9 @@ inputs:
 }:
 let
   inherit (inputs) self;
-  inherit (self.packages.${pkgs.stdenv.hostPlatform.system}.vimPlugins)
+  inherit (pkgs.stdenv.hostPlatform) system;
+  flakePackages = lib.recursiveUpdate self.packages.${system} self.legacyPackages.${system};
+  inherit (flakePackages.vimPlugins)
     pnpm-nvim
     nvim-highlight-colors
     ;
@@ -143,7 +145,7 @@ in
       ++ [
         pkgs.haskellPackages.cabal-fmt
         pkgs.stdenv.cc.cc
-        self.packages.${pkgs.stdenv.hostPlatform.system}.prettier-with-plugins
+        flakePackages.prettier-with-plugins
       ];
   };
   config.specs.catppuccin = {

@@ -109,17 +109,12 @@
         droid = final: prev: { neovim = self.wrappers.droid.wrap { pkgs = final; }; };
         default = self.overlays.neovim;
       };
-      packages = forAllSystems (
+      legacyPackages = forAllSystems (
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          neovim = self.wrappers.neovim.wrap { inherit pkgs; };
-          droid = self.wrappers.droid.wrap { inherit pkgs; };
-          default = self.packages.${system}.neovim;
-
-          prettier-with-plugins = pkgs.callPackage ./packages/prettier-with-plugins.nix { };
           vimPlugins = {
             marp-nvim = pkgs.vimUtils.buildVimPlugin {
               pname = "marp-nvim";
@@ -162,6 +157,21 @@
             };
           };
         }
+      );
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          neovim = self.wrappers.neovim.wrap { inherit pkgs; };
+          droid = self.wrappers.droid.wrap { inherit pkgs; };
+          default = self.packages.${system}.neovim;
+          prettier-with-plugins = pkgs.callPackage ./packages/prettier-with-plugins.nix { };
+        }
+      );
+      checks = forAllSystems (
+        system: self.packages.${system} // self.legacyPackages.${system}.vimPlugins
       );
       nixosModules = {
         neovim = wrappers.lib.getInstallModule {
