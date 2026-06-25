@@ -8,7 +8,8 @@ return {
       src = util.gh 'mrcjkb/haskell-tools.nvim',
       version = vim.version.range '^10',
     },
-    enabled = nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'haskell'),
+    -- enabled = nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'haskell'),
+    enabled = false,
     lazy = false,
     after = function()
       vim.api.nvim_create_autocmd('FileType', {
