@@ -298,7 +298,7 @@ in
   };
   config.specs.nix = {
     enable = config.cats.nix;
-    data = null;
+    data = [ pkgs.vimPlugins.haskell-tools-nvim ];
     runtimePkgs = builtins.attrValues {
       inherit (pkgs)
         nil
@@ -307,6 +307,12 @@ in
         nixfmt
         ;
     };
+  };
+  config.info.haskell.fallback = lib.mapAttrs (_: lib.getExe) {
+    inherit (pkgs.haskellPackages)
+      fourmolu
+      haskell-language-server
+      ;
   };
   config.specs.yuck = {
     enable = config.cats.yuck;
@@ -325,8 +331,6 @@ in
     runtimePkgs = builtins.attrValues {
       inherit (pkgs.haskellPackages)
         fast-tags
-        fourmolu
-        haskell-language-server
         hoogle
         ;
     };
