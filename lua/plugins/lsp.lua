@@ -8,10 +8,18 @@ return {
       src = util.gh 'mrcjkb/haskell-tools.nvim',
       version = vim.version.range '^10',
     },
-    -- enabled = nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'haskell'),
-    enabled = false,
+    enabled = nixInfo(false, 'settings', 'cats', 'lsp') and nixInfo(false, 'settings', 'cats', 'haskell'),
     lazy = false,
     after = function()
+      local hls_fallback = nixInfo(nil, 'info', 'haskell', 'fallback', 'haskell-langauge-server')
+      local fourmolu_fallback = nixInfo(nil, 'info', 'haskell', 'fallback', 'fourmolu')
+
+      for fb in pairs { hls_fallback, fourmolu_fallback } do
+        if fb ~= nil then
+          vim.env.PATH = vim.env.PATH .. ':' .. fb
+        end
+      end
+
       vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('haskell-tools', { clear = true }),
         pattern = { 'haskell' },
@@ -153,7 +161,6 @@ return {
           elm = 'elmls',
           fish = 'fish_lsp',
           go = 'gopls',
-          haskell = 'hls',
           html = 'html',
           js = { 'eslint', 'tailwindcss' },
           json = 'jsonls',
