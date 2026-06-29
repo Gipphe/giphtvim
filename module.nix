@@ -308,7 +308,7 @@ in
         ;
     };
   };
-  config.info.haskell.fallback = lib.mapAttrs (_: lib.getExe) {
+  config.info.haskell.fallback = lib.mapAttrs (_: p: "${p}/bin/${p.pname}") {
     inherit (pkgs.haskellPackages)
       fourmolu
       haskell-language-server
