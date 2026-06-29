@@ -273,6 +273,7 @@ return {
         desc = 'Toggle Undotree',
       },
     },
+    cmd = { 'UndotreeToggle', 'UndotreeFocus', 'UndotreePersistUndo' },
   },
 
   {
