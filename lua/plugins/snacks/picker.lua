@@ -258,13 +258,6 @@ local inspect = {
     end,
     desc = 'Search for plugin spec',
   },
-  {
-    lhs = 'u',
-    rhs = function()
-      require('snacks').picker.undo()
-    end,
-    desc = 'Undo history',
-  },
 }
 table.insert(groups, inspect)
 
