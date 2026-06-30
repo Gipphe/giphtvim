@@ -255,6 +255,7 @@ return {
     pack = {
       src = util.gh 'NMAC427/guess-indent.nvim',
     },
+    lazy = false,
     after = function()
       require('guess-indent').setup {}
     end,
