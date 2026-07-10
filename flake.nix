@@ -23,7 +23,10 @@
     }@inputs:
     let
       inherit (nixpkgs) lib;
-      forAllSystems = lib.genAttrs nixpkgs.lib.platforms.all;
+      forAllSystems = lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
       module = lib.modules.importApply ./module.nix inputs;
       neovimModule = {
         imports = [ module ];
@@ -168,6 +171,17 @@
           droid = self.wrappers.droid.wrap { inherit pkgs; };
           default = self.packages.${system}.neovim;
           prettier-with-plugins = pkgs.callPackage ./packages/prettier-with-plugins.nix { };
+        }
+      );
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          default = pkgs.mkShell {
+            packages = [ self.packages.${system}.neovim ];
+          };
         }
       );
       checks = forAllSystems (
