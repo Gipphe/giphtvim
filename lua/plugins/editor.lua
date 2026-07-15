@@ -9,6 +9,7 @@ return {
     },
     enabled = nixInfo(false, 'settings', 'cats', 'rich_editor'),
     cmd = 'Trouble',
+    lazy = false,
     after = function()
       require('trouble.nvim').setup {}
     end,
