@@ -11,7 +11,7 @@ return {
     cmd = 'Trouble',
     lazy = false,
     after = function()
-      require('trouble.nvim').setup {}
+      require('trouble').setup {}
     end,
     keys = {
       {
