@@ -134,7 +134,6 @@ in
     runtimePkgs =
       builtins.attrValues {
         inherit (pkgs)
-          codespell
           fd
           ripgrep
           universal-ctags

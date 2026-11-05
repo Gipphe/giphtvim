@@ -95,7 +95,6 @@ return {
           }
         end,
         formatters_by_ft = {
-          ['*'] = { 'codespell' },
           ['_'] = { 'trim_whitespace' },
         },
         formatters = {
