@@ -300,7 +300,7 @@ in
     enable = config.cats.nushell;
     data = null;
     runtimePkgs = [
-      pkgs.nushell
+      inputs.nixpkgs-nushell.legacyPackages.${pkgs.stdenv.hostPlatform.system}.nushell
       pkgs.nufmt
     ];
   };

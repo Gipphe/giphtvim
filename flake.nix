@@ -2,13 +2,18 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos.org"
+      "https://gipphe.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "gipphe.cachix.org-1:GeHkB5yyMQkXYCPJ1FqFl8fbtDe6/aSmS9k8c57GetY="
     ];
   };
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # TODO: Remove once 0.117.0 is in nixos-unstable.
+    # See https://nixpk.gs/pr-tracker.html?pr=586153
+    nixpkgs-nushell.url = "github:indium114/nixpkgs/nushell/0.117.0";
     wrappers = {
       url = "github:BirdeeHub/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
