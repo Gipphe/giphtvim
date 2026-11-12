@@ -13,6 +13,19 @@ return {
     after = function()
       local hls_fallback = nixInfo(nil, 'info', 'haskell', 'fallback', 'haskell-langauge-server')
       local fourmolu_fallback = nixInfo(nil, 'info', 'haskell', 'fallback', 'fourmolu')
+      vim.g.haskell_tools = {
+        hls = {
+          settings = {
+            haskell = {
+              plugin = {
+                refineImports = {
+                  codeLensOn = false,
+                },
+              },
+            },
+          },
+        },
+      }
 
       for fb in pairs { hls_fallback, fourmolu_fallback } do
         if fb ~= nil then
